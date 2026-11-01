@@ -1,0 +1,260 @@
+{
+ "tuned_model": {
+  "TOL_Q": 50,
+  "TOL_ABS_Q": 38,
+  "cal_far": 0.04666666666666667,
+  "cal_acc": 0.6626190476190477
+ },
+ "tuned_baselines": {
+  "T_timeout": 188488,
+  "T_lo": 149220,
+  "T_hi": 195080,
+  "tol_fixed_k": 0.19000000000000003
+ },
+ "metrics": {
+  "model-based": {
+   "detection": 0.8892857142857142,
+   "far": 0.07066666666666667,
+   "det_jitter_0.0": 0.8892857142857142,
+   "far_jitter_0.0": 0.06666666666666667,
+   "det_jitter_0.1": 0.9011904761904762,
+   "far_jitter_0.1": 0.03333333333333333,
+   "det_jitter_0.5": 0.875,
+   "far_jitter_0.5": 0.06666666666666667,
+   "det_jitter_1.0": 0.888095238095238,
+   "far_jitter_1.0": 0.06,
+   "det_jitter_2.0": 0.8928571428571429,
+   "far_jitter_2.0": 0.12666666666666668,
+   "det_cv_0.0": 0.8864285714285715,
+   "far_cv_0.0": 0.008,
+   "det_cv_0.032": 0.8821428571428571,
+   "far_cv_0.032": 0.024,
+   "det_cv_0.1": 0.8992857142857142,
+   "far_cv_0.1": 0.18,
+   "det_by_group": {
+    "NOMINAL": 0.07066666666666667,
+    "UNIFORM_FAST": 0.92,
+    "UNIFORM_SLOW": 1.0,
+    "RESTRICTION_UPSTREAM": 0.8966666666666666,
+    "RESTRICTION": 0.5311111111111111,
+    "STALL": 1.0,
+    "SENSOR": 1.0
+   },
+   "median_decision_s": {
+    "NOMINAL": 171.652,
+    "UNIFORM_FAST": 133.471,
+    "UNIFORM_SLOW": 341.503,
+    "RESTRICTION_UPSTREAM": 244.2635,
+    "RESTRICTION": 185.575,
+    "STALL": 212.316,
+    "SENSOR": 31.3255
+   }
+  },
+  "fixed timeout": {
+   "detection": 0.4683333333333333,
+   "far": 0.07333333333333333,
+   "det_jitter_0.0": 0.4607142857142857,
+   "far_jitter_0.0": 0.07333333333333333,
+   "det_jitter_0.1": 0.4666666666666667,
+   "far_jitter_0.1": 0.06,
+   "det_jitter_0.5": 0.475,
+   "far_jitter_0.5": 0.08666666666666667,
+   "det_jitter_1.0": 0.47619047619047616,
+   "far_jitter_1.0": 0.07333333333333333,
+   "det_jitter_2.0": 0.4630952380952381,
+   "far_jitter_2.0": 0.07333333333333333,
+   "det_cv_0.0": 0.42857142857142855,
+   "far_cv_0.0": 0.0,
+   "det_cv_0.032": 0.44642857142857145,
+   "far_cv_0.032": 0.0,
+   "det_cv_0.1": 0.53,
+   "far_cv_0.1": 0.22,
+   "det_by_group": {
+    "NOMINAL": 0.07333333333333333,
+    "UNIFORM_FAST": 0.0,
+    "UNIFORM_SLOW": 1.0,
+    "RESTRICTION_UPSTREAM": 0.94,
+    "RESTRICTION": 0.44222222222222224,
+    "STALL": 1.0,
+    "SENSOR": 0.13166666666666665
+   },
+   "median_decision_s": {
+    "NOMINAL": 171.652,
+    "UNIFORM_FAST": 133.471,
+    "UNIFORM_SLOW": 188.488,
+    "RESTRICTION_UPSTREAM": 188.488,
+    "RESTRICTION": 185.575,
+    "STALL": 188.488,
+    "SENSOR": 171.649
+   }
+  },
+  "single sensor": {
+   "detection": 0.5592857142857143,
+   "far": 0.064,
+   "det_jitter_0.0": 0.5571428571428572,
+   "far_jitter_0.0": 0.06666666666666667,
+   "det_jitter_0.1": 0.5678571428571428,
+   "far_jitter_0.1": 0.03333333333333333,
+   "det_jitter_0.5": 0.55,
+   "far_jitter_0.5": 0.07333333333333333,
+   "det_jitter_1.0": 0.5714285714285714,
+   "far_jitter_1.0": 0.08,
+   "det_jitter_2.0": 0.55,
+   "far_jitter_2.0": 0.06666666666666667,
+   "det_cv_0.0": 0.535,
+   "far_cv_0.0": 0.0,
+   "det_cv_0.032": 0.5292857142857142,
+   "far_cv_0.032": 0.0,
+   "det_cv_0.1": 0.6135714285714285,
+   "far_cv_0.1": 0.192,
+   "det_by_group": {
+    "NOMINAL": 0.064,
+    "UNIFORM_FAST": 0.96,
+    "UNIFORM_SLOW": 1.0,
+    "RESTRICTION_UPSTREAM": 0.8866666666666667,
+    "RESTRICTION": 0.39222222222222225,
+    "STALL": 1.0,
+    "SENSOR": 0.29777777777777775
+   },
+   "median_decision_s": {
+    "NOMINAL": 171.652,
+    "UNIFORM_FAST": 133.471,
+    "UNIFORM_SLOW": 195.08,
+    "RESTRICTION_UPSTREAM": 195.08,
+    "RESTRICTION": 185.575,
+    "STALL": 195.08,
+    "SENSOR": 171.649
+   }
+  },
+  "fixed-K windows": {
+   "detection": 0.8938095238095238,
+   "far": 0.06666666666666667,
+   "det_jitter_0.0": 0.8845238095238095,
+   "far_jitter_0.0": 0.06,
+   "det_jitter_0.1": 0.9,
+   "far_jitter_0.1": 0.02666666666666667,
+   "det_jitter_0.5": 0.8797619047619047,
+   "far_jitter_0.5": 0.04666666666666667,
+   "det_jitter_1.0": 0.9011904761904762,
+   "far_jitter_1.0": 0.08,
+   "det_jitter_2.0": 0.9035714285714286,
+   "far_jitter_2.0": 0.12,
+   "det_cv_0.0": 0.8921428571428571,
+   "far_cv_0.0": 0.0,
+   "det_cv_0.032": 0.895,
+   "far_cv_0.032": 0.008,
+   "det_cv_0.1": 0.8942857142857142,
+   "far_cv_0.1": 0.192,
+   "det_by_group": {
+    "NOMINAL": 0.06666666666666667,
+    "UNIFORM_FAST": 0.88,
+    "UNIFORM_SLOW": 1.0,
+    "RESTRICTION_UPSTREAM": 0.9366666666666666,
+    "RESTRICTION": 0.5455555555555556,
+    "STALL": 1.0,
+    "SENSOR": 1.0
+   },
+   "median_decision_s": {
+    "NOMINAL": 171.63,
+    "UNIFORM_FAST": 67.5325,
+    "UNIFORM_SLOW": 86.726,
+    "RESTRICTION_UPSTREAM": 82.5585,
+    "RESTRICTION": 172.9255,
+    "SENSOR": 28.9225
+   }
+  }
+ },
+ "confusion": [
+  [
+   697,
+   31,
+   8,
+   1,
+   0,
+   0,
+   13
+  ],
+  [
+   0,
+   448,
+   0,
+   0,
+   2,
+   0,
+   0
+  ],
+  [
+   12,
+   0,
+   130,
+   2,
+   0,
+   0,
+   6
+  ],
+  [
+   422,
+   41,
+   4,
+   422,
+   0,
+   0,
+   11
+  ],
+  [
+   31,
+   112,
+   0,
+   0,
+   0,
+   0,
+   157
+  ],
+  [
+   0,
+   0,
+   0,
+   0,
+   600,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   15,
+   157,
+   1613,
+   15
+  ]
+ ],
+ "confusion_rows": [
+  "NOMINAL",
+  "UNIFORM_SLOW",
+  "UNIFORM_FAST",
+  "RESTRICTION",
+  "RESTRICTION_UPSTREAM",
+  "STALL",
+  "SENSOR"
+ ],
+ "confusion_cols": [
+  "NOMINAL",
+  "UNIFORM_SLOW",
+  "UNIFORM_FAST",
+  "RESTRICTION",
+  "STALL",
+  "SENSOR",
+  "ANOMALY"
+ ],
+ "localisation": {
+  "RESTRICTION:other": 3,
+  "RESTRICTION:exact": 409,
+  "RESTRICTION:+1": 10,
+  "STALL:exact": 600,
+  "SENSOR:exact": 1178,
+  "SENSOR:other": 435
+ },
+ "exact_accuracy": 0.7445161290322581,
+ "float_fixed_agreement": 1.0
+}

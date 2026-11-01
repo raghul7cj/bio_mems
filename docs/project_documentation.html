@@ -1,0 +1,580 @@
+<title>Capillary Fault Classifier</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: lab-notebook record. Sticky contents rail on wide screens, single column on phones. */
+:root {
+  --bg: #f4f6f5;          /* nitrocellulose-white paper */
+  --panel: #ffffff;
+  --ink: #15201d;
+  --ink-2: #4b5753;
+  --rule: #d5dcd9;
+  --accent: #1d4fa3;      /* electrode ink */
+  --wet: #0f7f7a;         /* wetted paper */
+  --wet-soft: #d6efed;
+  --warn: #a25a00;
+  --ok: #157a3c;
+  --bad: #b3261e;
+  --plate: #ffffff;       /* figure plates stay white: the PNGs have white grounds */
+  --code-bg: #e9eeec;
+  --f-display: "Spectral", "Georgia", serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", "Consolas", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111816; --panel: #18211f; --ink: #e6ecea; --ink-2: #a9b6b2; --rule: #2c3936;
+  --accent: #7fa6ea; --wet: #4fc2bb; --wet-soft: #17332f; --warn: #e0a24a; --ok: #59c27f; --bad: #f08a80;
+  --plate: #f7f8f8; --code-bg: #1f2a28; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #111816; --panel: #18211f; --ink: #e6ecea; --ink-2: #a9b6b2; --rule: #2c3936;
+  --accent: #7fa6ea; --wet: #4fc2bb; --wet-soft: #17332f; --warn: #e0a24a; --ok: #59c27f; --bad: #f08a80;
+  --plate: #f7f8f8; --code-bg: #1f2a28; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--ink); font: 16px/1.6 var(--f-body); }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 32px 80px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; grid-template-columns: 1fr; gap: 32px; }
+@media (min-width: 1000px) { .wrap { grid-template-columns: 230px minmax(0, 1fr); } }
+nav.toc { font-size: 14px; }
+@media (min-width: 1000px) { nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start;
+  max-height: calc(100vh - 48px); overflow: auto; } }
+nav.toc h2 { font: 600 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; }
+nav.toc ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+nav.toc a { color: var(--ink); text-decoration: none; }
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent); text-decoration: underline; }
+main { min-width: 0; }
+header.hero { border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 8px; }
+.eyebrow { font: 600 12px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--wet); }
+h1 { font: 700 clamp(30px, 4.5vw, 46px)/1.1 var(--f-display); margin: 6px 0 12px; text-wrap: balance; }
+h2 { font: 600 28px/1.2 var(--f-display); margin: 56px 0 12px; text-wrap: balance; scroll-margin-top: 24px; }
+h3 { font: 700 18px/1.3 var(--f-body); margin: 28px 0 8px; }
+p, li { max-width: 72ch; }
+.lede { font-size: 18px; color: var(--ink-2); }
+a { color: var(--accent); }
+code, .mono { font-family: var(--f-mono); font-size: .88em; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+pre { background: var(--code-bg); padding: 12px 14px; border-radius: 6px; overflow-x: auto; font: 13px/1.5 var(--f-mono); }
+.eq { font-family: var(--f-mono); background: var(--panel); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 10px 14px; display: block; width: fit-content; max-width: 100%; overflow-x: auto; margin: 10px 0; }
+.scroll { overflow-x: auto; margin: 12px 0 18px; }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; background: var(--panel); }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+th { font: 600 12px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2); background: var(--bg); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.pill { display: inline-block; font: 600 11.5px var(--f-mono); letter-spacing: .04em; padding: 2px 8px; border-radius: 99px;
+  border: 1px solid currentColor; white-space: nowrap; }
+.pill.ok { color: var(--ok); } .pill.warn { color: var(--warn); } .pill.bad { color: var(--bad); } .pill.na { color: var(--ink-2); }
+figure { margin: 16px 0 24px; }
+figure .plate { background: var(--plate); border: 1px solid var(--rule); border-radius: 6px; padding: 8px; overflow-x: auto; }
+figure img { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+figcaption { font-size: 14px; color: var(--ink-2); margin-top: 8px; max-width: 80ch; }
+.diagram { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 12px; overflow-x: auto; }
+.diagram svg { display: block; min-width: 720px; width: 100%; height: auto; }
+.callout { border-left: 4px solid var(--wet); background: var(--panel); padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 16px 0; max-width: 80ch; }
+.callout.warn { border-left-color: var(--warn); }
+.grid2 { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.stat { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; }
+.stat b { display: block; font: 700 26px var(--f-display); font-variant-numeric: tabular-nums; }
+.stat span { font-size: 13.5px; color: var(--ink-2); }
+details { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 14px; margin: 10px 0; }
+summary { cursor: pointer; font-weight: 700; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* SVG diagram tokens */
+.d-box { fill: var(--panel); stroke: var(--ink); stroke-width: 1.4; }
+.d-box2 { fill: var(--wet-soft); stroke: var(--wet); stroke-width: 1.4; }
+.d-box3 { fill: var(--bg); stroke: var(--accent); stroke-width: 1.4; }
+.d-txt { fill: var(--ink); font: 13px var(--f-body); }
+.d-sm { fill: var(--ink-2); font: 11.5px var(--f-mono); }
+.d-b { fill: var(--ink); font: 700 13px var(--f-body); }
+.d-line { stroke: var(--ink-2); stroke-width: 1.5; fill: none; }
+.d-acc { stroke: var(--accent); stroke-width: 2; fill: none; }
+.d-arrow { fill: var(--ink-2); }
+.d-strip { fill: var(--bg); stroke: var(--ink); stroke-width: 1.4; }
+.d-wet { fill: var(--wet-soft); }
+.d-front { stroke: var(--wet); stroke-width: 3; }
+.d-elec { fill: var(--accent); }
+.d-restr { fill: var(--warn); opacity: .35; }
+.d-bad { fill: var(--bad); font: 700 12px var(--f-mono); }
+.d-ok { fill: var(--ok); font: 700 12px var(--f-mono); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#status">Status at a glance</a></li>
+    <li><a href="#system">System overview</a></li>
+    <li><a href="#phases">What was done, phase by phase</a></li>
+    <li><a href="#physics">Physics model</a></li>
+    <li><a href="#identifiability">Identifiability</a></li>
+    <li><a href="#detector">Detector algorithm</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#realdata">Real-data check</a></li>
+    <li><a href="#hardware">Hardware design</a></li>
+    <li><a href="#verification">Verification</a></li>
+    <li><a href="#decisions">Decisions and changes</a></li>
+    <li><a href="#reproduce">Files and commands</a></li>
+    <li><a href="#limits">Limitations and open items</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <div class="eyebrow">BioMEMS course project · IIIT Allahabad · record as of 28 Oct 2026</div>
+  <h1>Capillary Fault Classifier</h1>
+  <p class="lede">Four electrodes along a paper strip time the arrival of the liquid front. A calibrated capillary-flow model then tells which kind of filling fault happened, and where. The detector is built as FPGA hardware and verified against an independent software model.</p>
+</header>
+
+<!-- ============================================================ STATUS -->
+<h2 id="status">Status at a glance</h2>
+<div class="grid2">
+  <div class="stat"><b>9.42 mm²/s</b><span>Washburn coefficient K for nitrocellulose FF170HP, fitted to published wicking data</span></div>
+  <div class="stat"><b>88.9 % vs 46.8 %</b><span>faults detected: this method vs a fixed timeout, at the same ~7 % false-alarm rate</span></div>
+  <div class="stat"><b>9,900 / 9,900</b><span>test scenarios where the hardware design gives exactly the same answer as the reference model</span></div>
+  <div class="stat"><b>535 LUT · 3 DSP</b><span>size on the PYNQ-Z2's Zynq-7020; meets 100 MHz with 3.7 ns to spare</span></div>
+</div>
+<div class="scroll"><table>
+  <thead><tr><th>Phase</th><th>Goal</th><th>Result</th><th>Command</th></tr></thead>
+  <tbody>
+    <tr><td>0</td><td>Plan, environment, architecture choice</td><td><span class="pill ok">done</span> PLAN.md approved</td><td>—</td></tr>
+    <tr><td>—</td><td>One-page proposal PDF (due 1 Nov)</td><td><span class="pill warn">placeholders</span> group number and names missing</td><td><code>proposal/make_proposal.py</code></td></tr>
+    <tr><td>1</td><td>Tracer bullet: thinnest end-to-end path</td><td><span class="pill ok">pass</span></td><td><code>run.py phase1</code></td></tr>
+    <tr><td>2</td><td>Physics, calibration, scaling</td><td><span class="pill ok">pass</span> 7/7 generator checks</td><td><code>run.py phase2</code></td></tr>
+    <tr><td>3</td><td>Golden model, baselines, corpus, metrics</td><td><span class="pill ok">pass</span></td><td><code>run.py phase3</code></td></tr>
+    <tr><td>4</td><td>RTL, full regression, synthesis</td><td><span class="pill ok">pass</span> bit-exact, timing met</td><td><code>run.py phase4</code></td></tr>
+    <tr><td>5</td><td>Assertions, coverage, boundary cases</td><td><span class="pill ok">pass</span> one fix in the coverage model not yet compiled</td><td><code>run.py phase5</code></td></tr>
+    <tr><td>6</td><td>Real electrode data (Bezinge 2024)</td><td><span class="pill ok">pass</span> 3/3 flow times inside the paper's ranges</td><td><code>run.py phase6</code></td></tr>
+    <tr><td>7</td><td>Optional PYNQ-Z2 board demo</td><td><span class="pill na">not started</span></td><td>—</td></tr>
+    <tr><td>8</td><td>Report assets and draft</td><td><span class="pill ok">pass</span></td><td><code>run.py phase8</code></td></tr>
+  </tbody>
+</table></div>
+
+<!-- ============================================================ SYSTEM -->
+<h2 id="system">System overview</h2>
+<p>The work has two halves. The physics half produces realistic test data and a reference answer for every case. The hardware half implements the detector and is checked case by case against that reference. A separate real-data branch checks the timing assumptions against published measurements.</p>
+<div class="diagram" role="img" aria-label="Pipeline from published data through calibration, data generation, reference models and RTL simulation to comparison">
+<svg viewBox="0 0 980 330" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-arrow"/></marker></defs>
+  <!-- row 1: physics -->
+  <rect x="10" y="20" width="170" height="64" rx="6" class="d-box3"/>
+  <text x="95" y="45" text-anchor="middle" class="d-b">Published wicking</text><text x="95" y="63" text-anchor="middle" class="d-sm">Kasetsirikul 2020 Fig 7a</text>
+  <rect x="215" y="20" width="150" height="64" rx="6" class="d-box"/>
+  <text x="290" y="45" text-anchor="middle" class="d-b">Calibrate K</text><text x="290" y="63" text-anchor="middle" class="d-sm">physics/calibrate.py</text>
+  <rect x="400" y="20" width="200" height="64" rx="6" class="d-box2"/>
+  <text x="500" y="42" text-anchor="middle" class="d-b">Generator model</text><text x="500" y="60" text-anchor="middle" class="d-sm">Darcy series + volume</text><text x="500" y="76" text-anchor="middle" class="d-sm">+ sensor noise/faults</text>
+  <rect x="635" y="20" width="160" height="64" rx="6" class="d-box"/>
+  <text x="715" y="45" text-anchor="middle" class="d-b">Scenario corpus</text><text x="715" y="63" text-anchor="middle" class="d-sm">9,900 runs, fixed seeds</text>
+  <line x1="180" y1="52" x2="213" y2="52" class="d-line" marker-end="url(#ah)"/>
+  <line x1="365" y1="52" x2="398" y2="52" class="d-line" marker-end="url(#ah)"/>
+  <line x1="600" y1="52" x2="633" y2="52" class="d-line" marker-end="url(#ah)"/>
+  <!-- row 2: consumers -->
+  <rect x="470" y="140" width="170" height="56" rx="6" class="d-box"/>
+  <text x="555" y="163" text-anchor="middle" class="d-b">Reference models</text><text x="555" y="181" text-anchor="middle" class="d-sm">float + fixed-point (Python)</text>
+  <rect x="660" y="140" width="140" height="56" rx="6" class="d-box"/>
+  <text x="730" y="163" text-anchor="middle" class="d-b">Baselines</text><text x="730" y="181" text-anchor="middle" class="d-sm">timeout, single sensor</text>
+  <rect x="820" y="140" width="150" height="56" rx="6" class="d-box3"/>
+  <text x="895" y="163" text-anchor="middle" class="d-b">RTL in xsim</text><text x="895" y="181" text-anchor="middle" class="d-sm">SystemVerilog + SVA</text>
+  <path d="M715 84 V112 H555 V138" class="d-line" marker-end="url(#ah)"/>
+  <path d="M715 84 V138" class="d-line" marker-end="url(#ah)"/>
+  <path d="M715 112 H895 V138" class="d-line" marker-end="url(#ah)"/>
+  <!-- row 3: outcomes -->
+  <rect x="470" y="250" width="330" height="56" rx="6" class="d-box2"/>
+  <text x="635" y="273" text-anchor="middle" class="d-b">Metrics: detection, false alarms,</text><text x="635" y="291" text-anchor="middle" class="d-sm">confusion matrix, latency</text>
+  <rect x="820" y="250" width="150" height="56" rx="6" class="d-box2"/>
+  <text x="895" y="273" text-anchor="middle" class="d-b">Bit-exact compare</text><text x="895" y="291" text-anchor="middle" class="d-sm">9,900 / 9,900</text>
+  <line x1="555" y1="196" x2="555" y2="248" class="d-line" marker-end="url(#ah)"/>
+  <line x1="730" y1="196" x2="730" y2="248" class="d-line" marker-end="url(#ah)"/>
+  <line x1="895" y1="196" x2="895" y2="248" class="d-line" marker-end="url(#ah)"/>
+  <path d="M640 168 Q 760 225 885 248" class="d-acc" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+  <!-- real-data branch -->
+  <rect x="10" y="160" width="190" height="64" rx="6" class="d-box3"/>
+  <text x="105" y="185" text-anchor="middle" class="d-b">Bezinge 2024 data</text><text x="105" y="203" text-anchor="middle" class="d-sm">one real electrode trace</text>
+  <rect x="10" y="250" width="190" height="56" rx="6" class="d-box"/>
+  <text x="105" y="273" text-anchor="middle" class="d-b">Python port of their</text><text x="105" y="291" text-anchor="middle" class="d-sm">flow tracking → lag, jitter</text>
+  <line x1="105" y1="224" x2="105" y2="248" class="d-line" marker-end="url(#ah)"/>
+  <path d="M200 278 H300 V52" class="d-line" stroke-dasharray="4 4"/>
+  <text x="308" y="150" class="d-sm">confirms sensor lag</text><text x="308" y="166" class="d-sm">and jitter in generator</text>
+</svg>
+</div>
+<p class="mono" style="font-size:13px;color:var(--ink-2)">Dashed blue: the fixed-point reference model supplies the expected answer for every RTL run.</p>
+
+<!-- ============================================================ PHASES -->
+<h2 id="phases">What was done, phase by phase</h2>
+
+<details open><summary>Phase 0 · Plan and environment</summary>
+<ul>
+  <li><b>Tools found.</b> Python 3.12 (run as <code>py -3.12</code>; the bare <code>python</code> is a Windows Store stub), NumPy, SciPy and Matplotlib, and Vivado 2022.2 (xsim, xcrg, synthesis) with the PYNQ-Z2 board files. Not present: git, MATLAB and Octave. iverilog exists in WSL but cannot run SystemVerilog assertions or covergroups, so it was not used.</li>
+  <li><b>Architecture chosen.</b> Digital arrival lines, one per electrode ("interface A"). The detector tests each segment's fill time for consistency against an online estimate of K, using cross-multiplication. Rejected alternatives: fixed absolute windows (detects, but barely classifies), and a sampled-signal front end ("interface B": more work, and the only real data is single-electrode).</li>
+  <li><b>Plan.</b> <code>PLAN.md</code>, approved with default geometry: 4 electrodes on a 40 mm strip, spaced uniformly in L².</li>
+</ul></details>
+
+<details><summary>Proposal PDF</summary>
+<p><code>proposal/BioMEMS_Project_GroupX_Proposal.pdf</code>: one A4 page built with ReportLab from the handoff text, with a physics section and a timeline. It has placeholders for the group number and member names; regenerate with <code>py -3.12 proposal/make_proposal.py --group N --members "…"</code>. References 2–4 were cited from memory; verify them before submitting.</p></details>
+
+<details><summary>Phase 1 · Tracer bullet</summary>
+<p>One command ran the whole chain, generator to reference model to RTL in xsim to comparison, on three scenarios, and passed. It surfaced the first physics finding: a mild restriction is flagged one segment late, because its extra resistance persists downstream.</p>
+<p>Two Windows problems were fixed along the way. The project path contains spaces, and <code>cmd.exe</code> splits arguments on <code>=</code>, which breaks xsim's plusargs. The testbench therefore reads fixed file names in its working directory.</p></details>
+
+<details><summary>Phase 2 · Physics and calibration</summary>
+<ul>
+  <li><b>Data.</b> Publisher pages (PMC, ACS, RSC) block automated access. The open MDPI paper by Kasetsirikul et al. 2020 (CC BY) was used: 33 points read by eye from its Fig. 7a.</li>
+  <li><b>Fit.</b> K = 9.42 mm²/s, matching the paper's own fit (9.73) and the product rating (9.41). A gravity-corrected fit gives +9 %, kept as a systematic uncertainty.</li>
+  <li><b>Generator.</b> Rebuilt as quasi-steady Darcy flow with piecewise permeability and width, finite sample volume, and creep after the sample runs out, plus a sensor model.</li>
+  <li><b>Scaling table.</b> Built with bracketed effective pore radii, because no paper reports this membrane's pore size.</li>
+  <li><b>Finding.</b> A restriction upstream of the first electrode is not always invisible. It produces a decreasing ratio pattern.</li>
+</ul></details>
+
+<details><summary>Phase 3 · Reference model, baselines, metrics</summary>
+<ul>
+  <li><b>Corpus.</b> 9,900 scenarios: 29 fault scenarios × 5 jitter levels × 3 strip-variability levels × 20 seeds, with 100 seeds for nominal strips. Split into calibration and test halves.</li>
+  <li><b>Tolerances.</b> Tuned by grid search on the calibration half for ≤ 5 % false alarms; every metric is reported on the test half.</li>
+  <li><b>Two spec changes (SPEC v0.2).</b> The uniform-K test moved to the total fill time, raising fast-fluid detection from 47 % to 92 %. A first-segment plausibility floor was added, which removed false STALLs caused by spurious early triggers.</li>
+</ul></details>
+
+<details><summary>Phase 4 · RTL and synthesis</summary>
+<ul>
+  <li><b>Problem.</b> At 8 clocks per tick, the corpus needed about 10¹⁰ simulated cycles. The design was rebuilt so that decisions depend only on captured timestamps, never on clock timing. The testbench can then run one tick per clock.</li>
+  <li><b>Regression.</b> Run in parallel shards: 9,900/9,900 bit-exact.</li>
+  <li><b>Timing fix.</b> The first place-and-route missed 100 MHz by 8 ns (a 36-level combinational scan). The scan became a multi-clock walk over a snapshot, and it now meets timing with 3.72 ns of slack.</li>
+</ul></details>
+
+<details><summary>Phase 5 · Assertions, coverage, boundary cases</summary>
+<ul>
+  <li><b>Checks.</b> White-box assertions and covergroups live in <code>tb/detector_core_checks.svh</code>, which is compiled for simulation only.</li>
+  <li><b>Boundary suite.</b> 52 directed cases sit on, or one tick beside, every decision boundary. Each carries an intent check against the reference model.</li>
+  <li><b>Mutation test.</b> Six deliberately broken RTL copies. The first version of the assertions missed two; both were strengthened, and now all 6 are caught.</li>
+  <li><b>Incident.</b> Running 12 simulators at once with assertions enabled exhausted the machine's memory, and the system crashed. Parallel runs are now capped at 4 (<code>SIM_JOBS</code>), and by default Phase 5 uses one simulator process.</li>
+  <li><b>Coverage report.</b> xcrg also split paths at spaces; it now uses relative paths. A bin-range quirk in xsim made one coverpoint misreport 33.6 %. The real coverage was recovered from the hit values (17/17), and the bin definition was rewritten. The rewrite has not yet been compiled.</li>
+</ul></details>
+
+<details><summary>Phase 6 · Real electrode data</summary>
+<p>The dataset is not reachable automatically; the publisher pages are bot-checked and ETH rate-limited the requests. You supplied the authors' files (Mendeley Data, doi:10.17632/nd9cyw62rk.1), which were copied unmodified with checksums. Their MATLAB flow tracking was ported line by line to Python and checked against an analytic step response. All four injections were detected, and the three completed flow times fall inside the paper's reported ranges.</p></details>
+
+<details><summary>Phase 8 · Report assets</summary>
+<p>Identifiability computed rather than asserted (§5), a generated identifiability table, and <code>report/REPORT_DRAFT.md</code>, written physics first with ten limitations.</p></details>
+
+<!-- ============================================================ PHYSICS -->
+<h2 id="physics">Physics model</h2>
+<div class="diagram" role="img" aria-label="Paper strip with inlet pad on the left, four electrodes at 20, 28.3, 34.6 and 40 millimetres, wetted region up to the moving front, and an optional restriction in segment 2">
+<svg viewBox="0 0 980 230" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="d-arrow"/></marker></defs>
+  <!-- scale: x = 80 + L*21 -->
+  <rect x="20" y="70" width="60" height="70" rx="4" class="d-box2"/>
+  <text x="50" y="160" text-anchor="middle" class="d-sm">sample</text><text x="50" y="174" text-anchor="middle" class="d-sm">pad</text>
+  <rect x="80" y="85" width="840" height="40" class="d-strip"/>
+  <rect x="80" y="85" width="520" height="40" class="d-wet"/>
+  <line x1="600" y1="80" x2="600" y2="130" class="d-front"/>
+  <text x="600" y="72" text-anchor="middle" class="d-sm">front L(t)</text>
+  <rect x="733" y="85" width="84" height="40" class="d-restr"/>
+  <text x="775" y="150" text-anchor="middle" class="d-sm">possible restriction</text>
+  <!-- electrodes -->
+  <rect x="496" y="80" width="8" height="50" class="d-elec"/><text x="500" y="200" text-anchor="middle" class="d-txt">e0 · 20.0 mm</text>
+  <rect x="670" y="80" width="8" height="50" class="d-elec"/><text x="674" y="218" text-anchor="middle" class="d-txt">e1 · 28.3</text>
+  <rect x="803" y="80" width="8" height="50" class="d-elec"/><text x="807" y="200" text-anchor="middle" class="d-txt">e2 · 34.6</text>
+  <rect x="916" y="80" width="8" height="50" class="d-elec"/><text x="920" y="218" text-anchor="middle" class="d-txt">e3 · 40</text>
+  <line x1="500" y1="132" x2="500" y2="186" class="d-line" stroke-dasharray="3 3"/>
+  <line x1="674" y1="132" x2="674" y2="204" class="d-line" stroke-dasharray="3 3"/>
+  <line x1="807" y1="132" x2="807" y2="186" class="d-line" stroke-dasharray="3 3"/>
+  <line x1="920" y1="132" x2="920" y2="204" class="d-line" stroke-dasharray="3 3"/>
+  <!-- segment labels -->
+  <text x="290" y="112" text-anchor="middle" class="d-sm">segment 0</text>
+  <text x="587" y="58" text-anchor="end" class="d-sm">seg 1</text>
+  <text x="740" y="58" text-anchor="middle" class="d-sm">seg 2</text>
+  <text x="864" y="58" text-anchor="middle" class="d-sm">seg 3</text>
+  <line x1="120" y1="40" x2="420" y2="40" class="d-line" marker-end="url(#ah2)"/>
+  <text x="120" y="30" class="d-sm">capillary pressure pulls liquid; resistance grows with wetted length</text>
+</svg>
+</div>
+<p>The electrodes are spaced so that L² steps evenly (20² = 400, 28.3² = 800, 34.6² = 1200, 40² = 1600 mm²). Under Washburn flow every segment then takes the same time, E = 42.5 s for water.</p>
+
+<h3>Equations</h3>
+<span class="eq">Washburn:  L² = K·t,   K = γ r cosθ / (2μ)</span>
+<span class="eq">Expected segment time:  E_k = (L_k² − L_{k−1}²) / K</span>
+<span class="eq">Generator (Darcy, series resistance):  dL/dt = (K/2) / ( w(L) · ∫₀ᴸ dx / (k(x)·w(x)) )</span>
+<p>Here γ is surface tension, r an effective pore radius, θ the contact angle, μ the viscosity, k the relative permeability and w the relative width. With k = w = 1 the generator reduces exactly to Washburn. It also adds a finite sample volume, creep after the sample runs out, fluid scaling, strip-to-strip variability of K, a detection lag, timing jitter, and missed, spurious or stuck electrodes.</p>
+
+<h3>Calibration</h3>
+<figure><div class="plate"><img src="figures/calibration_K.png" alt="L squared against time for nitrocellulose with Washburn and gravity-corrected fits, and residual plot" width="1520" height="608" loading="lazy"></div>
+<figcaption>Digitised wicking data for nitrocellulose FF170HP with water (Kasetsirikul et al. 2020, Fig. 7a). The straight line in L² against t is Washburn's law. Residuals stay within the ±0.5 mm reading uncertainty after the first ~10 s.</figcaption></figure>
+<div class="scroll"><table>
+  <thead><tr><th>Quantity</th><th class="num">Value</th><th>Source</th></tr></thead>
+  <tbody>
+    <tr><td>K, Washburn fit</td><td class="num">9.42 mm²/s</td><td>this work</td></tr>
+    <tr><td>K from the paper's fit p²</td><td class="num">9.73 mm²/s</td><td>Kasetsirikul 2020, Table 6</td></tr>
+    <tr><td>K from the product rating (4 cm in 170 s)</td><td class="num">9.41 mm²/s</td><td>Kasetsirikul 2020, App. A</td></tr>
+    <tr><td>Gravity-corrected K</td><td class="num">10.3 mm²/s (+9 %)</td><td>this work; kept as a systematic uncertainty</td></tr>
+    <tr><td>Strip-to-strip CV of K</td><td class="num">3.2 %</td><td>Table 6 widths; 10 % upper case from Patari 2020</td></tr>
+    <tr><td>Detection lag</td><td class="num">1.8 s</td><td>Bezinge 2024, confirmed in Phase 6</td></tr>
+  </tbody>
+</table></div>
+
+<h3>Scaling: which forces matter</h3>
+<div class="scroll"><table>
+  <thead><tr><th>Number</th><th>Compares</th><th class="num">Range</th><th>Conclusion</th></tr></thead>
+  <tbody>
+    <tr><td>Bond (pore)</td><td>gravity vs capillarity</td><td class="num">7×10⁻⁹ – 5×10⁻⁴</td><td>capillarity sets the meniscus</td></tr>
+    <tr><td>Capillary</td><td>viscous vs surface forces</td><td class="num">1×10⁻⁶ – 3×10⁻⁵</td><td>quasi-static capillary pressure</td></tr>
+    <tr><td>Reynolds (pore)</td><td>inertia vs viscosity</td><td class="num">3×10⁻⁵ – 0.16</td><td>slow viscous (Darcy) flow</td></tr>
+    <tr><td>Inertial time</td><td>how long inertia matters</td><td class="num">≤ 0.53 ms</td><td>shorter than one 1 ms tick</td></tr>
+  </tbody>
+</table></div>
+<p>Each range spans the two effective pore radii, 0.23 µm and 61 µm, which bracket the unknown pore size.</p>
+
+<!-- ============================================================ IDENTIFIABILITY -->
+<h2 id="identifiability">Identifiability: what the timings can and cannot tell</h2>
+<p>The detector sees only the segment ratios ρ_k = Δt_k / E_k: how much slower each segment filled than water would. Two consequences were computed directly.</p>
+<figure><div class="plate"><img src="figures/identifiability.png" alt="Left: three different fluid property changes produce the same flat ratio of 2. Right: deviation against restriction severity for each segment, crossing the 19.5 percent tolerance at 10 to 15 millimetres" width="1785" height="663" loading="lazy"></div>
+<figcaption>(a) Doubling viscosity, halving surface tension, or raising the contact angle to 60° all halve K, and give identical arrival ticks (84926, 169852, 254778, 339703 ms). (b) A restriction adds hydraulic resistance equal to ΔL_eq of extra paper. The classifier sees it once the deviation passes the 19.5 % tolerance: at 10, 13 and 15 mm in segments 1, 2 and 3. An upstream restriction levels off near 35 % and is flagged only above ~15 mm.</figcaption></figure>
+<div class="scroll"><table>
+  <thead><tr><th>Fault</th><th>Signature</th><th>Identifiable?</th><th>Evidence (test split)</th></tr></thead>
+  <tbody>
+    <tr><td>Fluid-property change</td><td>all ρ equal, ≠ 1</td><td><span class="pill ok">class yes</span> <span class="pill bad">property no</span></td><td>slow fluids → UNIFORM_SLOW 100 %; warm water → UNIFORM_FAST 87 %</td></tr>
+    <tr><td>Restriction, segment ≥ 1</td><td>ρ steps up at that segment</td><td><span class="pill ok">yes + location</span> above 10–15 mm</td><td>strong (20 mm): detected 94 %, right segment 90 %; mild (4 mm): 13 %</td></tr>
+    <tr><td>Restriction upstream of e0</td><td>ρ_k/ρ_0 decreasing</td><td><span class="pill warn">partly</span></td><td>ANOMALY 52 %, UNIFORM_SLOW 37 %, NOMINAL 10 %</td></tr>
+    <tr><td>Insufficient volume (stall)</td><td>later electrodes never fire</td><td><span class="pill ok">yes + gap</span></td><td>100 % correct class and gap</td></tr>
+    <tr><td>Sensor fault</td><td>impossible order or timing</td><td><span class="pill warn">usually</span> index ambiguous</td><td>flagged 100 %, SENSOR 90 %, right electrode 65 %</td></tr>
+    <tr><td>K change inside the strip spread</td><td>flat, within ±14.8 %</td><td><span class="pill bad">no</span> by design</td><td>the band absorbs 3–10 % batch spread and the +9 % calibration systematic</td></tr>
+  </tbody>
+</table></div>
+
+<!-- ============================================================ DETECTOR -->
+<h2 id="detector">Detector algorithm</h2>
+<div class="diagram" role="img" aria-label="Flowchart: arm, check lines high before start, then per stage wait for the earliest arrival or window expiry, with sensor checks, then segment consistency and uniform band tests">
+<svg viewBox="0 0 980 470" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="d-arrow"/></marker></defs>
+  <rect x="380" y="10" width="220" height="44" rx="22" class="d-box3"/><text x="490" y="37" text-anchor="middle" class="d-b">arm: sample applied, t = 0</text>
+  <rect x="360" y="80" width="260" height="44" rx="6" class="d-box"/><text x="490" y="107" text-anchor="middle" class="d-txt">any electrode already high?</text>
+  <text x="640" y="107" class="d-bad">yes → SENSOR</text>
+  <rect x="300" y="150" width="380" height="64" rx="6" class="d-box2"/>
+  <text x="490" y="174" text-anchor="middle" class="d-b">stage k: wait for the earliest arrival (any j ≥ k)</text>
+  <text x="490" y="196" text-anchor="middle" class="d-sm">or window expiry: elapsed &gt; r̂ · E_k · 3   (stage 0: 5·E_0)</text>
+  <text x="700" y="174" class="d-bad">expired first → STALL, loc k</text>
+  <text x="700" y="196" class="d-bad">tie / out of order → SENSOR</text>
+  <rect x="330" y="240" width="320" height="44" rx="6" class="d-box"/><text x="490" y="267" text-anchor="middle" class="d-txt">record Δt_k; stage 0: Δt_0 ≥ 0.5·E_0 ?</text>
+  <text x="670" y="267" class="d-bad">too fast → SENSOR</text>
+  <path d="M330 262 H230 V182 H298" class="d-line" marker-end="url(#ah3)"/><text x="140" y="225" class="d-sm">next stage</text><text x="140" y="241" class="d-sm">k = k + 1</text>
+  <rect x="290" y="310" width="400" height="56" rx="6" class="d-box"/>
+  <text x="490" y="333" text-anchor="middle" class="d-txt">segments 1..N−1: Δt_k·E_0 vs Δt_0·E_k·(1 ± 19.5 %)</text>
+  <text x="490" y="352" text-anchor="middle" class="d-sm">first one too slow / too fast</text>
+  <text x="710" y="333" class="d-bad">→ RESTRICTION, loc k</text><text x="710" y="352" class="d-bad">→ ANOMALY, loc k</text>
+  <rect x="290" y="392" width="400" height="56" rx="6" class="d-box"/>
+  <text x="490" y="415" text-anchor="middle" class="d-txt">all consistent: total time vs nominal ± 14.8 %</text>
+  <text x="490" y="434" text-anchor="middle" class="d-sm">compare Σ Δt with Σ E</text>
+  <text x="710" y="415" class="d-ok">NOMINAL</text><text x="710" y="434" class="d-ok">UNIFORM_SLOW / UNIFORM_FAST</text>
+  <line x1="490" y1="54" x2="490" y2="78" class="d-line" marker-end="url(#ah3)"/>
+  <line x1="490" y1="124" x2="490" y2="148" class="d-line" marker-end="url(#ah3)"/>
+  <line x1="490" y1="214" x2="490" y2="238" class="d-line" marker-end="url(#ah3)"/>
+  <line x1="490" y1="284" x2="490" y2="308" class="d-line" marker-end="url(#ah3)"/>
+  <text x="500" y="300" class="d-sm">after last electrode</text>
+  <line x1="490" y1="366" x2="490" y2="390" class="d-line" marker-end="url(#ah3)"/>
+</svg>
+</div>
+<p><b>Online K.</b> r̂ = Δt_0/E_0 is the sample's own slowness, measured on the first segment. Later windows scale with r̂, so a viscous but healthy sample is not mistaken for a stall. This per-stage, model-derived window is what lets the detector say where the front stopped; a fixed timeout cannot.</p>
+<p><b>Cross-multiplication.</b> Every test compares integer products, such as Δt_k·E_0·256 against Δt_0·E_k·(256 + TOL). There are no divisions and no rounding, which is why the hardware can match the reference model exactly.</p>
+<div class="scroll"><table>
+  <thead><tr><th>Parameter</th><th class="num">Value</th><th>Meaning</th><th>Origin</th></tr></thead>
+  <tbody>
+    <tr><td>TOL</td><td class="num">50/256 = 19.5 %</td><td>segment-to-segment consistency</td><td>tuned on calibration seeds</td></tr>
+    <tr><td>TOL_ABS</td><td class="num">38/256 = 14.8 %</td><td>nominal band on the total fill time</td><td>tuned on calibration seeds</td></tr>
+    <tr><td>TOL_STALL</td><td class="num">512/256 → ×3</td><td>stage window = r̂·E_k·3</td><td>design choice</td></tr>
+    <tr><td>FIRST_Q</td><td class="num">1280/256 → ×5</td><td>longest first segment (blood ≈ 3.9× water)</td><td>design choice</td></tr>
+    <tr><td>MIN_FIRST_Q</td><td class="num">128/256 → ×0.5</td><td>fastest plausible first segment</td><td>physics: warm water is 1.29×</td></tr>
+    <tr><td>Tick, timestamp width</td><td class="num">1 ms, 24 bit</td><td>4.7 h range; worst undecided run is 2.1×10⁶ ticks</td><td>design choice, proven bound</td></tr>
+  </tbody>
+</table></div>
+
+<!-- ============================================================ RESULTS -->
+<h2 id="results">Results (held-out test split, 4,950 scenarios)</h2>
+<div class="scroll"><table>
+  <thead><tr><th>Method</th><th class="num">Faults detected</th><th class="num">False alarms</th><th>Classifies?</th></tr></thead>
+  <tbody>
+    <tr><td><b>Model-based (this work)</b></td><td class="num"><b>88.9 %</b></td><td class="num">7.1 %</td><td>cause + location</td></tr>
+    <tr><td>Fixed timeout on the last electrode</td><td class="num">46.8 %</td><td class="num">7.3 %</td><td>no</td></tr>
+    <tr><td>Single sensor, end time inside a window</td><td class="num">55.9 %</td><td class="num">6.4 %</td><td>no</td></tr>
+    <tr><td>Same 4 electrodes, fixed windows (ablation)</td><td class="num">89.4 %</td><td class="num">6.7 %</td><td>no</td></tr>
+  </tbody>
+</table></div>
+<div class="callout"><b>Reading this table.</b> The extra electrodes give the detection gain; the fixed-window ablation detects just as well. The model-based method adds <i>classification</i>: exact class and location in 74.5 % of test cases, with the non-identifiable upstream restriction excluded.</div>
+<figure><div class="plate"><img src="figures/confusion_matrix.png" alt="Confusion matrix of true cause against predicted class" width="1292" height="748" loading="lazy"></div>
+<figcaption>Rows: what really happened. Columns: what the detector said. Stall is always right; mild restrictions mostly read as nominal because they sit below the visibility threshold of §5.</figcaption></figure>
+<figure><div class="plate"><img src="figures/detection_vs_noise.png" alt="Detection and false alarm rates against timing jitter and strip variability for the four methods" width="1870" height="612" loading="lazy"></div>
+<figcaption>Detection does not depend on noise. False alarms rise to ~12.7 % at 2 s jitter. Real electrodes sit at about 1.4 s (§8).</figcaption></figure>
+<figure><div class="plate"><img src="figures/detection_by_cause.png" alt="Detection rate by fault cause for the four methods" width="1530" height="578" loading="lazy"></div>
+<figcaption>Detection rate by cause. The timeout baseline cannot see fast fluids or most sensor faults.</figcaption></figure>
+<div class="scroll"><table>
+  <thead><tr><th>Median time to decision</th><th class="num">Model-based</th><th class="num">Fixed timeout</th></tr></thead>
+  <tbody>
+    <tr><td>Nominal strip</td><td class="num">172 s</td><td class="num">172 s</td></tr>
+    <tr><td>Stall</td><td class="num">212 s</td><td class="num">188 s</td></tr>
+    <tr><td>Sensor fault</td><td class="num">31 s</td><td class="num">172 s</td></tr>
+    <tr><td>Viscous sample (uniform slow)</td><td class="num">342 s</td><td class="num">188 s</td></tr>
+  </tbody>
+</table></div>
+<figure><div class="plate"><img src="figures/arrival_patterns.png" alt="Arrival times and segment ratios for each fault class from the generator" width="1600" height="624" loading="lazy"></div>
+<figcaption>What each fault does to the arrivals (generator, no noise). A flat ratio pattern means a uniform K change; a step means a local restriction.</figcaption></figure>
+
+<!-- ============================================================ REAL DATA -->
+<h2 id="realdata">Real-data check (Bezinge et al. 2024)</h2>
+<p>The authors' published run, <code>data_P3.csv</code>, is a vertical-flow device with one electrode cell receiving four injections. Their flow-tracking algorithm was ported line by line to Python (<code>realdata/bezinge_flow.py</code>). It works from the current difference between pulses one second apart, averaged over one second: 10 samples above threshold mean flow, and 100 samples below mean a stop.</p>
+<figure><div class="plate"><img src="figures/bezinge_flow.png" alt="Pulse current, differential current with threshold, and status trace with detected flow times" width="1445" height="1054" loading="lazy"></div>
+<figcaption>Reproduction of the authors' flow tracking. The threshold drops from 1.5 to 0.4 µA after the rinse, as the paper describes.</figcaption></figure>
+<div class="scroll"><table>
+  <thead><tr><th>Step (inferred from the assay order)</th><th class="num">Reproduced</th><th class="num">Paper median (IQR)</th><th>Inside IQR</th></tr></thead>
+  <tbody>
+    <tr><td>Serum sample, 100 µL</td><td class="num">29.2 s</td><td class="num">30 (29–39) s</td><td><span class="pill ok">yes</span></td></tr>
+    <tr><td>Labelling solution, 100 µL</td><td class="num">19.5 s</td><td class="num">22 (17–32) s</td><td><span class="pill ok">yes</span></td></tr>
+    <tr><td>Rinse buffer, 150 µL</td><td class="num">40.6 s</td><td class="num">31 (28–41) s</td><td><span class="pill ok">yes</span></td></tr>
+  </tbody>
+</table></div>
+<p>The paper's agreement with visual timing (+1.8 s bias, IQR −0.1 to 2.5 s) confirms the generator's lag parameter. It also implies about 1.4 s of jitter per detected event, inside the 0–2 s range simulated.</p>
+
+<!-- ============================================================ HARDWARE -->
+<h2 id="hardware">Hardware design</h2>
+<div class="diagram" role="img" aria-label="RTL block diagram: four electrode inputs through synchronizers to capture units stamped by a millisecond counter, a snapshot scan, the sequencer state machine with a shared multiplier and constant ROM, and result registers">
+<svg viewBox="0 0 980 330" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="ah4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="d-arrow"/></marker></defs>
+  <text x="10" y="70" class="d-sm">arrive_async[3:0]</text>
+  <text x="10" y="86" class="d-sm">(comparators)</text>
+  <rect x="130" y="40" width="110" height="70" rx="6" class="d-box"/><text x="185" y="70" text-anchor="middle" class="d-b">sync2</text><text x="185" y="88" text-anchor="middle" class="d-sm">2 flip-flops</text>
+  <rect x="280" y="20" width="190" height="110" rx="6" class="d-box2"/>
+  <text x="375" y="45" text-anchor="middle" class="d-b">capture_unit × 4</text>
+  <text x="375" y="66" text-anchor="middle" class="d-sm">glitch filter: DEB clocks high</text>
+  <text x="375" y="84" text-anchor="middle" class="d-sm">timestamp = tick count at</text>
+  <text x="375" y="100" text-anchor="middle" class="d-sm">start of the high run</text>
+  <rect x="280" y="190" width="190" height="56" rx="6" class="d-box"/><text x="375" y="214" text-anchor="middle" class="d-b">timebase</text><text x="375" y="232" text-anchor="middle" class="d-sm">1 ms tick → 24-bit now</text>
+  <rect x="510" y="20" width="180" height="110" rx="6" class="d-box"/>
+  <text x="600" y="45" text-anchor="middle" class="d-b">snapshot scan</text>
+  <text x="600" y="66" text-anchor="middle" class="d-sm">copy all stamps at once,</text>
+  <text x="600" y="84" text-anchor="middle" class="d-sm">min · ties · finality,</text>
+  <text x="600" y="100" text-anchor="middle" class="d-sm">one electrode per clock</text>
+  <rect x="730" y="20" width="230" height="110" rx="6" class="d-box3"/>
+  <text x="845" y="45" text-anchor="middle" class="d-b">sequencer FSM</text>
+  <text x="845" y="66" text-anchor="middle" class="d-sm">16 states: stage windows,</text>
+  <text x="845" y="84" text-anchor="middle" class="d-sm">sensor checks, classifier,</text>
+  <text x="845" y="100" text-anchor="middle" class="d-sm">uniform band</text>
+  <rect x="730" y="190" width="110" height="80" rx="6" class="d-box"/><text x="785" y="218" text-anchor="middle" class="d-b">multiplier</text><text x="785" y="236" text-anchor="middle" class="d-sm">24 × 36 bit</text><text x="785" y="252" text-anchor="middle" class="d-sm">2 stages, 3 DSP</text>
+  <rect x="850" y="190" width="110" height="80" rx="6" class="d-box"/><text x="905" y="218" text-anchor="middle" class="d-b">constant ROM</text><text x="905" y="236" text-anchor="middle" class="d-sm">params_pkg</text><text x="905" y="252" text-anchor="middle" class="d-sm">E·(256±tol)</text>
+  <rect x="510" y="270" width="180" height="50" rx="6" class="d-box2"/><text x="600" y="292" text-anchor="middle" class="d-b">result</text><text x="600" y="310" text-anchor="middle" class="d-sm">valid · cls[2:0] · loc[2:0]</text>
+  <line x1="110" y1="75" x2="128" y2="75" class="d-line" marker-end="url(#ah4)"/>
+  <line x1="240" y1="75" x2="278" y2="75" class="d-line" marker-end="url(#ah4)"/>
+  <line x1="375" y1="190" x2="375" y2="132" class="d-line" marker-end="url(#ah4)"/>
+  <line x1="470" y1="75" x2="508" y2="75" class="d-line" marker-end="url(#ah4)"/>
+  <line x1="690" y1="75" x2="728" y2="75" class="d-line" marker-end="url(#ah4)"/>
+  <line x1="785" y1="130" x2="785" y2="188" class="d-line" marker-start="url(#ah4)" marker-end="url(#ah4)"/>
+  <line x1="905" y1="190" x2="905" y2="132" class="d-line" marker-end="url(#ah4)"/>
+  <path d="M760 130 V160 H600 V268" class="d-line" marker-end="url(#ah4)"/>
+</svg>
+</div>
+<p><b>Why timestamps only.</b> The sequencer decides from captured timestamps alone. It treats an arrival as final once no glitch filter is pending and the clock has moved past it, and a timeout as final once the window has expired at a sampled time, since a later sample can only be more expired. Its answer is therefore the same however many clock cycles pass per tick, and however long the multiplier takes. That is what let the regression run one tick per clock, about 10⁵× faster than real time.</p>
+<div class="scroll"><table>
+  <thead><tr><th>Implementation (xc7z020, out-of-context, Vivado 2022.2)</th><th class="num">Value</th></tr></thead>
+  <tbody>
+    <tr><td>Slice LUTs</td><td class="num">535 (1.0 %)</td></tr>
+    <tr><td>Flip-flops</td><td class="num">674 (0.6 %)</td></tr>
+    <tr><td>DSP48E1 / Block RAM</td><td class="num">3 / 0</td></tr>
+    <tr><td>Timing at 100 MHz</td><td class="num">WNS +3.72 ns → Fmax ≈ 159 MHz</td></tr>
+    <tr><td>Power (vectorless estimate)</td><td class="num">46 mW total, 6 mW dynamic</td></tr>
+  </tbody>
+</table></div>
+
+<!-- ============================================================ VERIFICATION -->
+<h2 id="verification">Verification</h2>
+<div class="diagram" role="img" aria-label="Verification flow: specification feeds an independent fixed-point model and the RTL; stimulus files drive the RTL testbench; results are compared, assertions checked, coverage merged, and mutants tested">
+<svg viewBox="0 0 980 250" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="ah5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="d-arrow"/></marker></defs>
+  <rect x="10" y="95" width="130" height="56" rx="6" class="d-box3"/><text x="75" y="120" text-anchor="middle" class="d-b">SPEC.md</text><text x="75" y="138" text-anchor="middle" class="d-sm">one source</text>
+  <rect x="190" y="20" width="200" height="56" rx="6" class="d-box"/><text x="290" y="45" text-anchor="middle" class="d-b">golden_fixed.py</text><text x="290" y="63" text-anchor="middle" class="d-sm">written from the spec</text>
+  <rect x="190" y="170" width="200" height="56" rx="6" class="d-box"/><text x="290" y="195" text-anchor="middle" class="d-b">RTL (SystemVerilog)</text><text x="290" y="213" text-anchor="middle" class="d-sm">+ assertions, covergroups</text>
+  <rect x="440" y="95" width="190" height="56" rx="6" class="d-box2"/><text x="535" y="118" text-anchor="middle" class="d-b">stim: corpus + 52</text><text x="535" y="136" text-anchor="middle" class="d-sm">boundary cases, glitches</text>
+  <rect x="680" y="20" width="140" height="56" rx="6" class="d-box"/><text x="750" y="45" text-anchor="middle" class="d-b">expected</text><text x="750" y="63" text-anchor="middle" class="d-sm">(class, loc)</text>
+  <rect x="680" y="170" width="140" height="56" rx="6" class="d-box"/><text x="750" y="195" text-anchor="middle" class="d-b">xsim testbench</text><text x="750" y="213" text-anchor="middle" class="d-sm">1 tick / clock</text>
+  <rect x="860" y="95" width="110" height="56" rx="6" class="d-box2"/><text x="915" y="120" text-anchor="middle" class="d-b">compare</text><text x="915" y="138" text-anchor="middle" class="d-sm">bit-exact</text>
+  <path d="M140 115 H165 V48 H188" class="d-line" marker-end="url(#ah5)"/>
+  <path d="M140 131 H165 V198 H188" class="d-line" marker-end="url(#ah5)"/>
+  <path d="M390 48 H678" class="d-line" marker-end="url(#ah5)"/>
+  <path d="M390 198 H678" class="d-line" marker-end="url(#ah5)"/>
+  <path d="M535 95 V60" class="d-line" marker-end="url(#ah5)"/>
+  <path d="M535 151 V186" class="d-line" marker-end="url(#ah5)"/>
+  <path d="M820 48 H840 V110 H858" class="d-line" marker-end="url(#ah5)"/>
+  <path d="M820 198 H840 V136 H858" class="d-line" marker-end="url(#ah5)"/>
+</svg>
+</div>
+<div class="scroll"><table>
+  <thead><tr><th>Check</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td>Full corpus, RTL vs fixed-point reference model</td><td><span class="pill ok">9,900 / 9,900</span> 1.68×10⁹ ticks simulated</td></tr>
+    <tr><td>Float vs fixed-point reference models</td><td><span class="pill ok">100 %</span> agreement</td></tr>
+    <tr><td>Boundary suite (window edges, tolerance edges, ties, back-to-back, glitches 1/3/4 clocks, high before arm)</td><td><span class="pill ok">52 / 52</span></td></tr>
+    <tr><td>Assertions: legal transitions, one result per run, monotonic time, glitch-filter rule, no result before its evidence, no result built on a rejected arrival</td><td><span class="pill ok">0 failures</span></td></tr>
+    <tr><td>Functional coverage: states, transitions, boundary events, result class × location</td><td><span class="pill ok">16/16 · 30/30 · 9/9 · 17/17</span></td></tr>
+    <tr><td>Mutation test: 6 deliberately broken RTL copies</td><td><span class="pill ok">6 / 6 caught</span> after two assertions were strengthened</td></tr>
+    <tr><td>Timestamp counter saturation</td><td><span class="pill ok">unreachable</span> worst case 2.1×10⁶ of 1.7×10⁷ ticks</td></tr>
+  </tbody>
+</table></div>
+
+<!-- ============================================================ DECISIONS -->
+<h2 id="decisions">Decisions and changes from the handoff</h2>
+<div class="scroll"><table>
+  <thead><tr><th>Topic</th><th>Handoff assumed</th><th>What we did, and why</th></tr></thead>
+  <tbody>
+    <tr><td>Calibration paper</td><td>Mendez 2010 / Fu 2011</td><td>Kasetsirikul 2020: the only open paper with a usable lateral-membrane curve. The others are bot-blocked.</td></tr>
+    <tr><td>Upstream restriction</td><td>never distinguishable</td><td>distinguishable above ~15 mm (non-Washburn pattern); weak ones hide</td></tr>
+    <tr><td>Uniform-K test</td><td>first segment</td><td>total fill time (SPEC v0.2): the detection lag matters less</td></tr>
+    <tr><td>Sensor check</td><td>ordering only</td><td>adds a first-segment plausibility floor (0.5× nominal)</td></tr>
+    <tr><td>RTL timing</td><td>counter + windows</td><td>input capture + timestamp-only decisions, enabling fast verification</td></tr>
+    <tr><td>Formal check</td><td>optional</td><td>no formal tool installed; mutation testing used instead</td></tr>
+    <tr><td>Octave</td><td>run plotResults.m</td><td>not installed; a line-by-line Python port checked against an analytic step response</td></tr>
+    <tr><td>Interface B, PYNQ demo</td><td>optional</td><td>not done: single-electrode data; time budget</td></tr>
+  </tbody>
+</table></div>
+
+<!-- ============================================================ REPRODUCE -->
+<h2 id="reproduce">Files and commands</h2>
+<pre>py -3.12 run.py phase1          # tracer: 3 scenarios through xsim
+py -3.12 run.py phase2          # calibration, scaling, generator checks
+py -3.12 run.py phase3          # corpus, tuning, baselines, metrics (Python only)
+py -3.12 run.py phase4          # full RTL regression (SIM_JOBS parallel xsim) + Vivado
+py -3.12 run.py phase5          # boundary suite, assertions, coverage (one xsim process)
+py -3.12 run.py phase5-mutants  # mutation test (SIM_JOBS at a time)
+py -3.12 run.py phase6          # Bezinge real-data reproduction (Python only)
+py -3.12 run.py phase8          # identifiability assets + asset check (Python only)</pre>
+<div class="scroll"><table>
+  <thead><tr><th>Path</th><th>Contents</th></tr></thead>
+  <tbody>
+    <tr><td><code>PLAN.md</code>, <code>SPEC.md</code></td><td>approved plan with a status log; the detector specification that both models and the RTL follow</td></tr>
+    <tr><td><code>physics/</code></td><td>parameters with sources, calibration, Darcy generator, sensor model, scaling</td></tr>
+    <tr><td><code>scenarios/</code></td><td>corpus, boundary cases, tracer</td></tr>
+    <tr><td><code>golden/</code></td><td>float and fixed-point reference models, baselines, evaluation, identifiability, figures</td></tr>
+    <tr><td><code>rtl/</code>, <code>tb/</code>, <code>syn/</code></td><td>SystemVerilog design, testbench and checks, Vivado script and constraints</td></tr>
+    <tr><td><code>realdata/</code>, <code>data/</code></td><td>Bezinge port and comparison; literature and real data with provenance</td></tr>
+    <tr><td><code>results/</code></td><td>all generated figures and tables</td></tr>
+    <tr><td><code>report/REPORT_DRAFT.md</code></td><td>results report draft</td></tr>
+    <tr><td><code>proposal/</code></td><td>one-page proposal generator and PDF</td></tr>
+  </tbody>
+</table></div>
+
+<!-- ============================================================ LIMITS -->
+<h2 id="limits">Limitations and open items</h2>
+<div class="callout warn"><b>Main limitation.</b> The four-electrode results come from a physics model, not a measured strip. The model is richer than the detector but shares its physics family, so the numbers are best read as an upper bound.</div>
+<ul>
+  <li><b>Calibration.</b> From a vertical-rise figure read by eye (±0.5 mm), for one membrane with water; +9 % gravity systematic.</li>
+  <li><b>Real data.</b> One run of a single-electrode vertical-flow device; it validates event timing only.</li>
+  <li><b>Physics limits.</b> The fluid property cannot be named; weak upstream restrictions look like slow fluids; restrictions below ~10–15 mm are missed; a sensor fault's electrode index is ambiguous.</li>
+  <li><b>False alarms.</b> 6–13 % at realistic jitter: too high for a clinical device without better timing.</li>
+  <li><b>Latency.</b> A viscous sample is classified only after its last arrival (median 342 s).</li>
+  <li><b>Assumed values.</b> Sample volume 25 µL, creep 20 s, electrode positions, textbook viscosities.</li>
+  <li><b>Hardware.</b> Out-of-context timing and vectorless power only; the design has not run on the board; interface A assumes off-chip comparators.</li>
+  <li><b>Open items.</b>
+    <ul>
+      <li>The proposal PDF has placeholder names.</li>
+      <li>The Mendez 2010 citation hasn't been checked against the paper.</li>
+      <li>The rewritten coverage bins have not yet been compiled.</li>
+      <li>The final report format is unknown.</li>
+      <li>The dataset licence was not checked (your decision).</li>
+    </ul></li>
+</ul>
+</main>
+</div>

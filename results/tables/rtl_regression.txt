@@ -1,0 +1,5 @@
+scenarios 9900
+ticks 1684574325
+matched 9900
+mismatched 0
+classes {'NOMINAL': 2345, 'UNIFORM_SLOW': 1239, 'UNIFORM_FAST': 293, 'ANOMALY': 400, 'RESTRICTION': 892, 'STALL': 1514, 'SENSOR': 3217}

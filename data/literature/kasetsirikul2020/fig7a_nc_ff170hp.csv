@@ -1,0 +1,42 @@
+# Source: S. Kasetsirikul, M. J. A. Shiddiky, N.-T. Nguyen, "Wicking in Paper Strips under Consideration of
+#   Liquid Absorption Capacity", Chemosensors 8(3), 65, 2020. doi:10.3390/chemosensors8030065. Licence CC BY 4.0.
+# Figure 7(a): non-laminated nitrocellulose membrane (Whatman FF170HP), strips 2/4/6 mm wide, n = 3 each,
+#   VERTICAL capillary rise of 0.1 % dye in DI water, front distance vs sqrt(time).
+# Digitisation: manual reading of fig7.png (downloaded from MDPI, same folder) by Claude, 2026-10-27.
+#   Value = visual mean of the three width series in each sampled column. Reading uncertainty ~ +/-0.5 mm.
+#   The columns match the stated camera sampling (every 1 s for 10 s, then every 5 s; a 0.5 s point is visible).
+# Published Washburn fits of the same data (Table 6): p = 3.08 / 3.18 / 3.12 mm s^-1/2 (2 / 4 / 6 mm), mean 3.12.
+sqrt_t_s05,L_mm
+0.71,1.0
+1.00,2.0
+1.41,3.5
+1.73,4.5
+2.00,5.5
+2.24,6.5
+2.45,7.0
+2.65,7.8
+2.83,8.5
+3.00,9.0
+3.16,9.6
+3.87,12.2
+4.47,14.0
+5.00,15.5
+5.48,17.0
+5.92,18.5
+6.32,19.8
+6.71,21.0
+7.07,22.0
+7.42,23.3
+7.75,24.6
+8.06,25.6
+8.37,26.6
+8.94,27.8
+9.49,28.9
+10.00,30.3
+10.49,32.0
+10.95,33.5
+11.40,34.8
+11.83,36.0
+12.25,37.3
+12.65,38.4
+13.04,39.5

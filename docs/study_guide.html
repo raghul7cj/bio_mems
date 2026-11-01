@@ -1,0 +1,524 @@
+<title>Capillary Flow Study Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;0,700;1,500&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a teaching notebook. One reading column (~70ch), margin notes become inline on phones; a lab bench section with live controls. */
+:root {
+  --bg: #f3f6f6;
+  --panel: #ffffff;
+  --ink: #142023;
+  --ink-2: #4a5a5e;
+  --rule: #d3dde0;
+  --wet: #0e7c78;        /* wetted paper: primary accent */
+  --wet-soft: #d4efec;
+  --accent: #2148a0;     /* electrode ink */
+  --warn: #a35a00;
+  --ok: #17793b;
+  --bad: #b02a22;
+  --note: #eef3fb;
+  --code-bg: #e7eeef;
+  --f-display: "Spectral", "Georgia", serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", "Consolas", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1719; --panel: #172124; --ink: #e5ecee; --ink-2: #a5b4b8; --rule: #2a383c; --wet: #52c6be; --wet-soft: #163430;
+  --accent: #86a8ee; --warn: #e3a24f; --ok: #5ac583; --bad: #f08a80; --note: #1a2433; --code-bg: #1d2a2d; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f1719; --panel: #172124; --ink: #e5ecee; --ink-2: #a5b4b8; --rule: #2a383c; --wet: #52c6be; --wet-soft: #163430;
+  --accent: #86a8ee; --warn: #e3a24f; --ok: #5ac583; --bad: #f08a80; --note: #1a2433; --code-bg: #1d2a2d; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--ink); font: 17px/1.65 var(--f-body); }
+.wrap { max-width: 880px; margin: 0 auto; padding-block: 36px 96px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.eyebrow { font: 600 12px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--wet); }
+h1 { font: 700 clamp(32px, 5vw, 50px)/1.08 var(--f-display); margin: 8px 0 14px; text-wrap: balance; }
+h2 { font: 600 clamp(24px, 3vw, 30px)/1.2 var(--f-display); margin: 64px 0 10px; text-wrap: balance; scroll-margin-top: 20px;
+  padding-top: 14px; border-top: 2px solid var(--ink); }
+h2 .n { font: 600 14px var(--f-mono); color: var(--wet); display: block; letter-spacing: .06em; }
+h3 { font: 700 18px/1.3 var(--f-body); margin: 26px 0 6px; }
+p, li { max-width: 70ch; }
+.lede { font-size: 19px; color: var(--ink-2); max-width: 64ch; }
+a { color: var(--accent); }
+code, .mono { font-family: var(--f-mono); font-size: .86em; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+.eq { display: block; width: fit-content; max-width: 100%; overflow-x: auto; font: 15px/1.5 var(--f-mono);
+  background: var(--panel); border: 1px solid var(--rule); border-left: 4px solid var(--wet); border-radius: 0 6px 6px 0; padding: 10px 14px; margin: 12px 0; }
+.eq small { display: block; color: var(--ink-2); font: 13px var(--f-body); }
+.note { background: var(--note); border-radius: 6px; padding: 12px 16px; margin: 16px 0; max-width: 70ch; font-size: 16px; }
+.note b:first-child { font: 600 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 2px; }
+.key { border: 1.5px solid var(--wet); border-radius: 6px; padding: 12px 16px; margin: 18px 0; max-width: 70ch; background: var(--panel); }
+.key b:first-child { color: var(--wet); }
+nav.toc { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 18px; margin: 22px 0; }
+nav.toc h2 { all: unset; display: block; font: 600 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 6px; }
+nav.toc ol { margin: 0; padding-left: 22px; columns: 2 260px; column-gap: 32px; }
+nav.toc li { break-inside: avoid; }
+.scroll { overflow-x: auto; margin: 12px 0 18px; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; background: var(--panel); }
+th, td { text-align: left; vertical-align: top; padding: 7px 10px; border-bottom: 1px solid var(--rule); }
+th { font: 600 12px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2); background: var(--bg); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.diagram { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 10px; overflow-x: auto; margin: 14px 0; }
+.diagram svg { display: block; width: 100%; height: auto; min-width: 560px; }
+.cap { font-size: 14px; color: var(--ink-2); margin-top: -6px; }
+details { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 14px; margin: 8px 0; max-width: 76ch; }
+summary { cursor: pointer; font-weight: 700; }
+details p { margin: 8px 0 2px; }
+summary:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* SVG tokens */
+.s-ink { stroke: var(--ink); fill: none; stroke-width: 1.5; }
+.s-ink2 { stroke: var(--ink-2); fill: none; stroke-width: 1.2; }
+.s-wet { stroke: var(--wet); fill: none; stroke-width: 2.5; }
+.s-acc { stroke: var(--accent); fill: none; stroke-width: 2; }
+.f-wet { fill: var(--wet-soft); }
+.f-panel { fill: var(--panel); stroke: var(--ink); stroke-width: 1.4; }
+.f-acc { fill: var(--accent); }
+.f-warn { fill: var(--warn); opacity: .35; }
+.t { fill: var(--ink); font: 13px var(--f-body); }
+.tb { fill: var(--ink); font: 700 13px var(--f-body); }
+.ts { fill: var(--ink-2); font: 11.5px var(--f-mono); }
+.tw { fill: var(--wet); font: 700 13px var(--f-body); }
+.arr { fill: var(--ink-2); }
+/* Lab */
+.lab { background: var(--panel); border: 1.5px solid var(--wet); border-radius: 8px; padding: 16px; margin: 18px 0; }
+.lab-grid { display: grid; gap: 18px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .lab-grid { grid-template-columns: 300px minmax(0, 1fr); } }
+.ctl { display: grid; gap: 4px; margin-bottom: 12px; }
+.ctl label { font-weight: 700; font-size: 15px; display: flex; justify-content: space-between; gap: 8px; }
+.ctl label output { font: 600 14px var(--f-mono); color: var(--wet); font-variant-numeric: tabular-nums; }
+.ctl small { color: var(--ink-2); font-size: 13px; }
+input[type=range] { width: 100%; accent-color: var(--wet); }
+select { font: 15px var(--f-body); padding: 5px 8px; border: 1px solid var(--rule); border-radius: 4px; background: var(--bg); color: var(--ink); }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.presets button { font: 600 13px var(--f-body); border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 99px; padding: 5px 12px; cursor: pointer; }
+.presets button:hover { border-color: var(--wet); color: var(--wet); }
+.verdict { font: 700 22px var(--f-display); margin: 4px 0; }
+.verdict.ok { color: var(--ok); } .verdict.bad { color: var(--bad); } .verdict.warn { color: var(--warn); }
+.why { font-size: 15px; color: var(--ink-2); margin: 0 0 12px; min-height: 3em; }
+.kv { font: 14px var(--f-mono); color: var(--ink-2); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+<div class="eyebrow">Study companion · BioMEMS project · read in order, about two hours</div>
+<h1>Capillary Flow Study Guide</h1>
+<p class="lede">How liquid moves through paper, how four electrodes can tell which kind of fault happened, and why some faults can never be told apart. It starts from surface tension and ends with the hardware that makes the decision, so you can explain every step in the TA meeting.</p>
+
+<nav class="toc" aria-label="Contents"><h2>Contents</h2><ol>
+  <li><a href="#big">The whole project in one picture</a></li>
+  <li><a href="#tension">Surface tension and wetting</a></li>
+  <li><a href="#viscous">Viscous flow and resistance</a></li>
+  <li><a href="#washburn">Washburn's law, derived</a></li>
+  <li><a href="#paper">Paper is not a bundle of tubes</a></li>
+  <li><a href="#scaling">Dimensionless numbers</a></li>
+  <li><a href="#faults">Faults as physics</a></li>
+  <li><a href="#electrodes">What the electrodes see</a></li>
+  <li><a href="#ident">What can and cannot be told apart</a></li>
+  <li><a href="#lab">Strip lab: try it yourself</a></li>
+  <li><a href="#rules">The detector's rules, explained</a></li>
+  <li><a href="#stats">How performance is measured</a></li>
+  <li><a href="#hw">From physics to hardware</a></li>
+  <li><a href="#real">The real-data check</a></li>
+  <li><a href="#ta">Questions the TA may ask</a></li>
+  <li><a href="#quiz">Check yourself</a></li>
+  <li><a href="#gloss">Glossary</a></li>
+</ol></nav>
+
+<!-- ================================================================= 1 -->
+<h2 id="big"><span class="n">1</span>The whole project in one picture</h2>
+<p>A paper test strip has no pump. Liquid is pulled along by <b>capillarity</b>, the same effect that makes a paper towel soak up water. We place four electrodes along the strip. Each one reports the moment the wet front reaches it. Physics predicts those moments for a healthy strip, so when the measured times disagree, the <i>pattern</i> of disagreement tells us what went wrong and roughly where.</p>
+<div class="diagram" role="img" aria-label="Strip with sample pad, wet region, front, four electrodes and a restriction">
+<svg viewBox="0 0 860 190" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="arr"/></marker></defs>
+  <!-- x = 70 + L*19 -->
+  <rect x="14" y="60" width="56" height="64" rx="4" class="f-wet" stroke="var(--wet)" stroke-width="1.4"/>
+  <text x="42" y="146" text-anchor="middle" class="ts">sample</text>
+  <rect x="70" y="74" width="760" height="36" class="f-panel"/>
+  <rect x="71" y="75" width="455" height="34" class="f-wet"/>
+  <line x1="526" y1="66" x2="526" y2="118" class="s-wet"/>
+  <text x="526" y="58" text-anchor="middle" class="tw">front</text>
+  <rect x="647" y="75" width="76" height="34" class="f-warn"/>
+  <text x="685" y="140" text-anchor="middle" class="ts">restriction?</text>
+  <rect x="446" y="68" width="8" height="48" class="f-acc"/><text x="450" y="176" text-anchor="middle" class="t">e0 20 mm</text>
+  <rect x="603" y="68" width="8" height="48" class="f-acc"/><text x="607" y="140" text-anchor="middle" class="t">e1 28.3</text>
+  <rect x="724" y="68" width="8" height="48" class="f-acc"/><text x="728" y="176" text-anchor="middle" class="t">e2 34.6</text>
+  <rect x="826" y="68" width="8" height="48" class="f-acc"/><text x="814" y="140" text-anchor="end" class="t">e3 40</text>
+  <line x1="100" y1="34" x2="380" y2="34" class="s-ink2" marker-end="url(#a1)"/>
+  <text x="100" y="24" class="ts">liquid moves this way, slower and slower</text>
+</svg></div>
+<p>The project has three layers, and this guide follows them:</p>
+<ol>
+  <li><b>Physics:</b> how fast the front moves, and what each fault does to that motion.</li>
+  <li><b>Decision rules:</b> how to turn four arrival times into a verdict, using only what the physics allows us to know.</li>
+  <li><b>Hardware:</b> a small circuit that applies those rules in real time, and the checks that prove it is correct.</li>
+</ol>
+
+<!-- ================================================================= 2 -->
+<h2 id="tension"><span class="n">2</span>Surface tension and wetting</h2>
+<p>Molecules inside a liquid are pulled equally in all directions by their neighbours. Molecules at the surface have neighbours on one side only, so they are pulled inward. The surface therefore behaves like a stretched skin, and making more of it costs energy. That energy per unit area is the <b>surface tension</b> γ (water: 0.072 N/m, the same as 0.072 J/m²).</p>
+<p>When the liquid touches a solid, the edge meets it at a <b>contact angle</b> θ. Water on clean cellulose has θ ≈ 0°: it spreads and <i>wets</i> the surface. A large θ (above 90°) means the liquid beads up, like water on wax. That is exactly why printed wax lines act as walls in paper devices.</p>
+<div class="diagram" role="img" aria-label="Liquid rising in a narrow tube with a curved meniscus and contact angle">
+<svg viewBox="0 0 640 210" xmlns="http://www.w3.org/2000/svg">
+  <rect x="40" y="150" width="200" height="40" class="f-wet"/>
+  <line x1="40" y1="150" x2="240" y2="150" class="s-wet"/>
+  <line x1="120" y1="20" x2="120" y2="190" class="s-ink"/><line x1="160" y1="20" x2="160" y2="190" class="s-ink"/>
+  <rect x="121" y="70" width="38" height="120" class="f-wet"/>
+  <path d="M121 70 Q140 90 159 70" class="s-wet"/>
+  <text x="140" y="14" text-anchor="middle" class="ts">tube radius r</text>
+  <text x="170" y="74" class="ts">meniscus</text>
+  <path d="M300 170 H600" class="s-ink"/>
+  <path d="M340 170 Q390 110 450 170" class="f-wet" stroke="var(--wet)" stroke-width="2"/>
+  <path d="M450 170 L420 140" class="s-acc"/>
+  <text x="456" y="150" class="ts">θ (contact angle)</text>
+  <text x="400" y="196" text-anchor="middle" class="ts">small θ: liquid wets the solid</text>
+</svg></div>
+<p>In a narrow tube a wetting liquid forms a curved surface, the <b>meniscus</b>. A curved surface carries a pressure jump across it, the <b>Laplace pressure</b>:</p>
+<span class="eq">ΔP = 2 γ cos θ / r<small>The narrower the tube (small r) and the better the wetting (θ near 0), the stronger the pull.</small></span>
+<p><b>Example.</b> Water in a 10 µm pore: ΔP = 2 × 0.072 / 10⁻⁵ ≈ 14,000 Pa, about 14 % of atmospheric pressure. For the real nitrocellulose membrane, the paper by Kasetsirikul et al. estimates an effective capillary pressure of about 2,300 Pa. This pressure is the "battery" that drives all flow in the strip.</p>
+
+<!-- ================================================================= 3 -->
+<h2 id="viscous">Viscous flow and resistance</h2>
+<p>Liquid also resists being pushed. <b>Viscosity</b> μ measures that resistance: water is 0.89 mPa·s, blood plasma about 1.3 and whole blood about 3.5. In a thin tube, flow is slow and smooth (laminar), and the average speed follows the Hagen–Poiseuille law:</p>
+<span class="eq">v̄ = r² ΔP / (8 μ L)<small>L is the length of liquid in the tube. A longer liquid column means more friction, so slower flow.</small></span>
+<p>The electrical analogy is the most useful way to think about it: <b>pressure is voltage, flow rate is current, and the tube is a resistor</b> whose resistance grows in proportion to its length. As the liquid fills more of the tube, the resistor gets longer and the current falls. That is the whole reason a wicking front slows down.</p>
+<div class="diagram" role="img" aria-label="Electrical analogy: capillary pressure as a battery driving current through a chain of resistors, one per segment of wetted paper, with one larger resistor for a restriction">
+<svg viewBox="0 0 760 170" xmlns="http://www.w3.org/2000/svg">
+  <line x1="40" y1="60" x2="40" y2="110" class="s-ink"/><line x1="54" y1="72" x2="54" y2="98" class="s-ink"/>
+  <text x="47" y="135" text-anchor="middle" class="ts">P_c</text><text x="47" y="150" text-anchor="middle" class="ts">(capillary)</text>
+  <path d="M54 85 H100" class="s-ink"/>
+  <path d="M100 85 l8 -10 l12 20 l12 -20 l12 20 l12 -20 l8 10" class="s-ink"/><text x="132" y="62" text-anchor="middle" class="ts">R seg 0</text>
+  <path d="M164 85 H200" class="s-ink"/>
+  <path d="M200 85 l8 -10 l12 20 l12 -20 l12 20 l12 -20 l8 10" class="s-ink"/><text x="232" y="62" text-anchor="middle" class="ts">R seg 1</text>
+  <path d="M264 85 H300" class="s-ink"/>
+  <path d="M300 85 l6 -14 l10 28 l10 -28 l10 28 l10 -28 l10 28 l10 -28 l10 28 l6 -14" class="s-acc"/><text x="346" y="58" text-anchor="middle" class="ts">restriction:</text><text x="346" y="72" text-anchor="middle" class="ts">extra R</text>
+  <path d="M392 85 H430" class="s-ink"/>
+  <path d="M430 85 l8 -10 l12 20 l12 -20 l12 20 l12 -20 l8 10" class="s-ink"/><text x="462" y="62" text-anchor="middle" class="ts">R seg 2</text>
+  <path d="M494 85 H540" class="s-ink"/>
+  <line x1="540" y1="70" x2="540" y2="100" class="s-wet"/><text x="546" y="90" class="tw">front</text>
+  <text x="600" y="80" class="t">current = flow rate</text>
+  <text x="600" y="98" class="t">= P_c / (sum of R)</text>
+  <text x="380" y="140" text-anchor="middle" class="ts">every resistor stays in the circuit once wetted, so a restriction slows every later segment too</text>
+</svg></div>
+
+<!-- ================================================================= 4 -->
+<h2 id="washburn">Washburn's law, derived</h2>
+<p>Combine the two ideas: the capillary pull from §2 drives the viscous flow from §3. Put ΔP = 2γ cosθ / r into Poiseuille, and the front speed is v̄ = dL/dt:</p>
+<span class="eq">dL/dt = r² / (8 μ L) · 2 γ cos θ / r = r γ cos θ / (4 μ L)</span>
+<p>Multiply both sides by L. The right side no longer depends on L or t:</p>
+<span class="eq">L · dL/dt = r γ cos θ / (4 μ)   →   d(L²)/dt = r γ cos θ / (2 μ)</span>
+<p>A quantity that grows at a constant rate is just that rate times time:</p>
+<span class="eq">L² = K t,   K = γ r cos θ / (2 μ)<small>Lucas (1918), Washburn (1921). K has units of mm²/s.</small></span>
+<div class="key"><b>What this means.</b> Distance grows like the <i>square root</i> of time. To wick twice as far takes four times as long. With our measured K = 9.42 mm²/s, reaching 20 mm takes 400 / 9.42 = 42.5 s, and reaching 40 mm takes 1600 / 9.42 = 170 s. The speed is dL/dt = K / (2L): 2.4 mm/s near the inlet, 0.12 mm/s at 40 mm.</div>
+<div class="diagram" role="img" aria-label="Plot of front position against time following a square-root curve, reaching 20 mm at 42.5 seconds and 40 mm at 170 seconds">
+<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+  <!-- x = 70 + t*3 (t 0..170 -> 70..580); y = 220 - L*4.5 (L 0..40 -> 220..40) -->
+  <line x1="70" y1="220" x2="600" y2="220" class="s-ink"/><line x1="70" y1="220" x2="70" y2="30" class="s-ink"/>
+  <g class="ts"><text x="70" y="238" text-anchor="middle">0</text><text x="197.5" y="238" text-anchor="middle">42.5</text><text x="325" y="238" text-anchor="middle">85</text><text x="580" y="238" text-anchor="middle">170 s</text>
+  <text x="62" y="224" text-anchor="end">0</text><text x="62" y="134" text-anchor="end">20</text><text x="62" y="44" text-anchor="end">40 mm</text></g>
+  <path d="M70 220 L73 206 L79 200.5 L85 196 L100 186.7 L130 172.7 L160 161.5 L197.5 130 L250 115.9 L325 100.2 L400 86.8 L460 75.6 L520 66.5 L580 40" class="s-wet"/>
+  <path d="M70 130 H197.5 V220" class="s-ink2" stroke-dasharray="4 4"/>
+  <path d="M70 40 H580 V220" class="s-ink2" stroke-dasharray="4 4"/>
+  <text x="210" y="124" class="ts">20 mm at 42.5 s</text>
+  <text x="420" y="56" class="ts">40 mm at 170 s (4× the time for 2× the distance)</text>
+</svg></div>
+
+<!-- ================================================================= 5 -->
+<h2 id="paper">Paper is not a bundle of tubes</h2>
+<p>Real paper is a tangled mat of fibres. Its pores have many sizes, and the path through them is winding. The proper description is <b>Darcy's law</b> for porous media: flow = (permeability × area / viscosity) × pressure gradient. <b>Permeability</b> k is a property of the paper, a measure of how easily liquid passes through it.</p>
+<p>Darcy still gives L² = K t, but K now bundles the capillary pressure, the permeability, the porosity and the viscosity together. We cannot predict K from a single "pore radius". Two ways of computing an effective radius from our measured numbers give 0.23 µm and 61 µm, which disagree by a factor of 270. So we <b>measure</b> K instead, by fitting published wicking data.</p>
+<div class="note"><b>Calibration in one line</b>We read 33 points off a published curve (nitrocellulose FF170HP with water) and fitted L² = K t: K = 9.42 mm²/s. The paper's own fit gives 9.73, and the manufacturer's "170 s per 4 cm" rating gives 9.41. The experiment was done vertically, and correcting for gravity would give about 9 % more, so we carry that as an uncertainty.</div>
+<p>The generator model used to create the test data uses Darcy flow through a <b>series of segments</b>. Each little piece of wetted paper is a resistor, with resistance proportional to its length divided by its permeability and width. The front speed is the capillary pressure divided by the total resistance behind it. With uniform paper this reduces exactly to Washburn.</p>
+
+<!-- ================================================================= 6 -->
+<h2 id="scaling"><span class="n">6</span>Dimensionless numbers: which forces can we ignore?</h2>
+<p>A dimensionless number is the ratio of two effects. If it is much smaller than 1, the effect on top can be ignored. This is how physicists justify a simple model.</p>
+<div class="scroll"><table>
+  <thead><tr><th>Number</th><th>Ratio of</th><th class="num">Our range</th><th>So we can…</th></tr></thead>
+  <tbody>
+    <tr><td>Bond, ρ g r² / γ</td><td>gravity : surface tension</td><td class="num">≤ 5×10⁻⁴</td><td>ignore gravity inside pores</td></tr>
+    <tr><td>Capillary, μ U / γ</td><td>viscous drag : surface tension</td><td class="num">≤ 3×10⁻⁵</td><td>treat the meniscus as static, pulling with a fixed pressure</td></tr>
+    <tr><td>Reynolds, ρ U r / μ</td><td>inertia : viscosity</td><td class="num">≤ 0.16</td><td>use slow viscous (Darcy) flow; no turbulence</td></tr>
+    <tr><td>Inertial time, ρ r² / 8μ</td><td>how long momentum matters</td><td class="num">≤ 0.53 ms</td><td>ignore start-up inertia (shorter than our 1 ms clock tick)</td></tr>
+  </tbody>
+</table></div>
+<p>The ranges span the two pore-size estimates from §5, so the conclusions hold whichever is closer to the truth. In words: in paper, surface tension and viscosity are in charge, and gravity and inertia are spectators.</p>
+
+<!-- ================================================================= 7 -->
+<h2 id="faults"><span class="n">7</span>Faults as physics</h2>
+<p>Every fault the detector looks for is a change to one term in the physics.</p>
+<div class="scroll"><table>
+  <thead><tr><th>Fault</th><th>What changes physically</th><th>Effect on the front</th></tr></thead>
+  <tbody>
+    <tr><td>Different fluid (thicker, poorer wetting)</td><td>μ, γ or θ, so K changes everywhere</td><td>every segment slower (or faster) by the same factor</td></tr>
+    <tr><td>Restriction: compressed paper, narrowed neck, blocked pores</td><td>one extra resistor in the chain</td><td>normal before it; slower from it onward</td></tr>
+    <tr><td>Too little sample</td><td>the source runs dry</td><td>the front creeps a little further, then stops</td></tr>
+    <tr><td>Sensor fault: missed, spurious, stuck</td><td>nothing physical; the reading is wrong</td><td>timings that physics cannot produce</td></tr>
+  </tbody>
+</table></div>
+<p><b>Measuring a restriction.</b> A stretch of paper of width w with only a fraction k of normal permeability has the resistance of a longer piece of normal paper. The extra length is</p>
+<span class="eq">ΔL_eq = (1/k − 1) · w<small>Example: 4 mm of paper at 1/6 permeability behaves like (6 − 1) × 4 = 20 mm of extra paper.</small></span>
+<p><b>Running out of sample.</b> The paper holds 10.1 µL per cm² (measured by weighing). A 4 mm wide strip needs 0.404 µL per mm, so 16 µL fills 40 mm. With less sample the front stops short, and the electrodes past that point never see liquid.</p>
+
+<!-- ================================================================= 8 -->
+<h2 id="electrodes"><span class="n">8</span>What the electrodes see</h2>
+<p>Each electrode reports one number, the time the front reached it. We compare consecutive differences, the time to cross each segment, with the Washburn prediction for water:</p>
+<span class="eq">Expected segment time:  E_k = (L_k² − L_{k−1}²) / K<br>Segment ratio:  ρ_k = measured Δt_k / E_k<small>ρ = 1: as fast as water. ρ = 2: twice as slow.</small></span>
+<p><b>Why the odd electrode positions?</b> Washburn says time depends on L². Putting the electrodes where L² steps evenly (L² = 400, 800, 1200, 1600 mm², so L = 20, 28.3, 34.6, 40 mm) makes every segment take the same 42.5 s for water. Each segment then gets equal timing resolution.</p>
+<div class="scroll"><table>
+  <thead><tr><th>Case</th><th class="num">t0</th><th class="num">t1</th><th class="num">t2</th><th class="num">t3 (s)</th><th>ρ pattern</th><th>Reading</th></tr></thead>
+  <tbody>
+    <tr><td>Water, healthy strip</td><td class="num">42.5</td><td class="num">84.9</td><td class="num">127.4</td><td class="num">169.9</td><td>1, 1, 1, 1</td><td>nominal</td></tr>
+    <tr><td>Twice the viscosity</td><td class="num">84.9</td><td class="num">169.9</td><td class="num">254.8</td><td class="num">339.7</td><td>2, 2, 2, 2</td><td>flat but high: fluid change</td></tr>
+    <tr><td>Restriction (20 mm) in segment 2</td><td class="num">42.5</td><td class="num">84.9</td><td class="num">140.9</td><td class="num">206.1</td><td>1, 1, 1.32, 1.54</td><td>step at segment 2: restriction there</td></tr>
+  </tbody>
+</table></div>
+<p>The last row is a real case from the project's first test. Notice that segment 3 is <i>also</i> slow, even though the restriction is in segment 2. That is the resistor from §3 staying in the circuit.</p>
+
+<!-- ================================================================= 9 -->
+<h2 id="ident"><span class="n">9</span>What can and cannot be told apart</h2>
+<p>This is the scientific core of the project. Ask what the measurement <i>could</i> reveal before asking how well an algorithm does.</p>
+<h3>Which fluid property changed: never</h3>
+<p>The arrival times depend on γ, θ and μ only through K ∝ γ cosθ / μ. Doubling the viscosity, halving the surface tension, or raising the contact angle from 0° to 60° (cos 60° = 0.5) all halve K. In the project's simulation they give <b>identical</b> arrival times, to the millisecond. No algorithm, however clever, can separate them with arrival times alone. The detector can say "the fluid is slower than water", not "the viscosity is high".</p>
+<h3>A restriction: only if it is big enough</h3>
+<p>For segments fully downstream of a restriction of size ΔL, the segment ratio rises to about</p>
+<span class="eq">ρ_k ≈ 1 + 2 ΔL / (L_k + L_{k−1})</span>
+<p>The same ΔL matters less further down the strip, because more resistance has already built up there. In the simulation a restriction is reliably seen once ΔL_eq exceeds about 10 mm in segment 1, 13 mm in segment 2 and 15 mm in segment 3. A "mild" 4 mm restriction changes the timing by under 10 %, which is smaller than the normal strip-to-strip spread, so it hides.</p>
+<h3>A restriction before the first electrode: partly</h3>
+<p>For a restriction right at the start of the strip, the extra resistance is present from the beginning, so t ∝ L² + 2ΔL·L. The extra term grows only like L, while the normal term grows like L², so the ratio <i>falls</i> along the strip (for ΔL = 20 mm: about 3.0, 1.8, 1.6, 1.5). A strong one produces this non-Washburn pattern, and the detector flags it as an ANOMALY. A weak one leaves the ratios almost flat, which is indistinguishable from a slower fluid.</p>
+<div class="key"><b>One sentence for the TA.</b> Arrival times measure K and how K varies along the strip. Anything that changes K in the same way everywhere looks the same, so we can classify the <i>kind</i> of fault and its location, but not the molecular cause.</div>
+
+<!-- ================================================================= 10 -->
+<h2 id="lab"><span class="n">10</span>Strip lab: try it yourself</h2>
+<p>This runs the same Darcy segment model and the same decision rules as the project, without noise. Change one thing at a time and predict the verdict before you look.</p>
+<div class="lab">
+  <div class="presets" role="group" aria-label="Example scenarios">
+    <button type="button" data-p="water">Healthy water</button>
+    <button type="button" data-p="blood">Whole-blood viscosity</button>
+    <button type="button" data-p="gamma">Same K via surface tension</button>
+    <button type="button" data-p="restr">Restriction in segment 2</button>
+    <button type="button" data-p="mild">Mild restriction</button>
+    <button type="button" data-p="upstream">Upstream restriction</button>
+    <button type="button" data-p="short">Too little sample</button>
+  </div>
+  <div class="lab-grid">
+    <div>
+      <div class="ctl"><label for="mu">Viscosity × water <output id="mu_o"></output></label><input id="mu" type="range" min="0.7" max="4.5" step="0.05" value="1"></div>
+      <div class="ctl"><label for="ga">Surface tension × water <output id="ga_o"></output></label><input id="ga" type="range" min="0.3" max="1.3" step="0.05" value="1"></div>
+      <div class="ctl"><label for="th">Contact angle <output id="th_o"></output></label><input id="th" type="range" min="0" max="75" step="1" value="0"></div>
+      <div class="ctl"><label for="seg">Restriction location</label>
+        <select id="seg"><option value="-1">none</option><option value="0">segment 0 (before e0)</option><option value="1">segment 1</option><option value="2">segment 2</option><option value="3">segment 3</option></select></div>
+      <div class="ctl"><label for="dl">Restriction size ΔL_eq <output id="dl_o"></output></label><input id="dl" type="range" min="0" max="40" step="1" value="20">
+        <small>4 mm wide; extra paper-equivalent length</small></div>
+      <div class="ctl"><label for="vol">Sample volume <output id="vol_o"></output></label><input id="vol" type="range" min="6" max="30" step="0.5" value="25">
+        <small>16.2 µL wets the full 40 mm; no creep in this lab</small></div>
+    </div>
+    <div style="min-width:0">
+      <div class="kv" id="kline"></div>
+      <div class="verdict" id="verdict"></div>
+      <p class="why" id="why"></p>
+      <div class="diagram" style="margin:0"><svg id="chart" viewBox="0 0 520 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bar chart of segment ratios"></svg></div>
+      <div class="scroll"><table><thead><tr><th>Electrode</th><th class="num">Position</th><th class="num">Arrival</th><th class="num">Water</th><th class="num">ρ_k</th></tr></thead><tbody id="tbody"></tbody></table></div>
+    </div>
+  </div>
+</div>
+<p class="cap">The bars show ρ_k. The shaded band is the consistency tolerance (±19.5 %) around the first segment's ratio; the dashed band is the ±14.8 % "still counts as water" range. Real measurements add about 1–2 s of timing noise, which is why mild cases fail in practice even when they cross a line here.</p>
+
+<!-- ================================================================= 11 -->
+<h2 id="rules"><span class="n">11</span>The detector's rules, explained</h2>
+<ol>
+  <li><b>Was anything already wet?</b> An electrode reading "wet" before the sample is applied is a broken sensor: SENSOR.</li>
+  <li><b>Learn this sample's speed from the first segment.</b> r̂ = Δt₀ / E₀. Blood is about 3.9× slower than water, and that is fine. The detector adapts instead of raising an alarm. This is the "online estimate of K".</li>
+  <li><b>Wait for each next electrode, with a window that scales.</b> Segment k may take up to 3 × r̂ × E_k. Past that, the front has stopped: STALL, at that segment. A fixed timeout uses one window for every sample, so it cannot say where the front stopped, and it misjudges fast or slow fluids.</li>
+  <li><b>Reject impossible timings.</b> Electrodes firing out of order or at the same instant, or a first segment more than twice as fast as water (no real sample is), mean SENSOR.</li>
+  <li><b>Compare every segment with the first.</b> The first segment that is more than 19.5 % slower than r̂ predicts is a RESTRICTION, located there. Much faster is an ANOMALY, the signature of an upstream restriction.</li>
+  <li><b>If all segments agree,</b> compare the total time with water's: within ±14.8 % is NOMINAL; slower or faster is UNIFORM_SLOW or UNIFORM_FAST, a fluid change.</li>
+</ol>
+<h3>Why cross-multiplication?</h3>
+<p>Rule 5 asks whether (Δt_k / E_k) / (Δt₀ / E₀) > 1.195. Division is expensive in hardware and introduces rounding. Multiply out instead: Δt_k · E₀ · 256 > Δt₀ · E_k · 306, since 306/256 = 1.195. Both sides are whole numbers, so the hardware and the Python reference model get exactly the same answer.</p>
+<div class="note"><b>Worked example</b>Restriction case from §8, in milliseconds: Δt₀ = 42463, Δt₂ = 55960, and every E = 42463. The E's cancel, so the test is 55960 × 256 = 14,325,760 against 42463 × 306 = 12,993,678. The left side is bigger, so the verdict is RESTRICTION in segment 2.</div>
+
+<!-- ================================================================= 12 -->
+<h2 id="stats"><span class="n">12</span>How performance is measured</h2>
+<ul>
+  <li><b>Detection rate:</b> of the strips that really had a fault, the fraction flagged. Ours: 88.9 %; a fixed timeout: 46.8 %.</li>
+  <li><b>False-alarm rate:</b> of the healthy strips, the fraction wrongly flagged. Any method can catch every fault by flagging everything, so detection only means something at a fixed false-alarm rate. All methods were tuned to about 5–7 %.</li>
+  <li><b>Calibration vs test split:</b> thresholds were chosen on one half of the simulated strips and scored on the other half. Tuning and scoring on the same data flatters the method, the same way seeing the exam paper in advance would.</li>
+  <li><b>Confusion matrix:</b> rows are what really happened, columns are what the detector said. The diagonal is right; anything off it is a specific kind of mistake.</li>
+  <li><b>Jitter σ:</b> the random error in each arrival time. Real electrodes show about 1.4 s, worked out from the published data.</li>
+  <li><b>IQR, the interquartile range:</b> the middle 50 % of a set of values. The paper reports "30 s (29–39)": half the samples took between 29 and 39 s.</li>
+</ul>
+
+<!-- ================================================================= 13 -->
+<h2 id="hw"><span class="n">13</span>From physics to hardware</h2>
+<div class="scroll"><table>
+  <thead><tr><th>Physics or rule</th><th>Hardware element</th></tr></thead>
+  <tbody>
+    <tr><td>Arrival time at an electrode</td><td>Input-capture unit: stores the 1 ms counter value when the comparator line goes high</td></tr>
+    <tr><td>Expected segment times E_k and tolerances</td><td>Constants in a small ROM, with constant × constant products folded at build time</td></tr>
+    <tr><td>Ratio tests (rules 3, 5, 6)</td><td>One shared 24 × 36-bit multiplier and 64-bit comparators; no divider</td></tr>
+    <tr><td>Rule sequence</td><td>A 16-state finite-state machine</td></tr>
+    <tr><td>Electrical noise on the electrode line</td><td>2-flip-flop synchronizer (against metastability), then a glitch filter: the line must stay high for 10 µs</td></tr>
+    <tr><td>Verdict</td><td>3-bit class and 3-bit location, with a one-cycle valid pulse</td></tr>
+  </tbody>
+</table></div>
+<p><b>Why decide from timestamps only?</b> The timestamp is taken at the start of the high pulse, so filtering adds no timing error. The state machine also acts only on stored timestamps, never on "what cycle is it now". Its answer is therefore the same at any clock speed. That let the 9,900 test cases be simulated with one tick per clock (about 10⁵× faster than real time), and every case matched the Python model exactly.</p>
+<p><b>How correctness was established, in four layers:</b> an independent reference model written from the spec, not from the RTL; exact agreement on all 9,900 cases; assertions that fail if the circuit ever gives a result before the evidence exists; and coverage, which shows that every state, transition and outcome was actually exercised. On top of that, six deliberately broken copies of the circuit were all caught by the assertions.</p>
+
+<!-- ================================================================= 14 -->
+<h2 id="real"><span class="n">14</span>The real-data check</h2>
+<p>Bezinge et al. (2024) printed graphene electrodes inside a paper test and sent 100 mV pulses every 0.1 s. When liquid flows over an electrode, its capacitive discharge current changes, so a jump in the current difference marks flow. We re-implemented their algorithm in Python, ran it on their published data, and reproduced their flow times: 29.2, 19.5 and 40.6 s, all inside the ranges reported in the paper. Their comparison with visual timing also tells us how precise real electrodes are, about 1.4 s per event, and the simulations used that range. Their device has a single electrode position, so it checks <i>timing</i>, not the four-electrode classification.</p>
+
+<!-- ================================================================= 15 -->
+<h2 id="ta"><span class="n">15</span>Questions the TA may ask</h2>
+<details><summary>Why does distance grow like √t and not like t?</summary><p>Because the resistance grows with the wetted length while the driving capillary pressure stays fixed. Speed is pressure divided by resistance, which is proportional to 1/L, so L·dL/dt is constant and L² = Kt.</p></details>
+<details><summary>Why not compute K from the pore size?</summary><p>Paper has no single pore size, and its paths are tortuous. Two estimates of an effective radius from our own measured numbers disagree by 270×. Fitting K to measured wicking captures all of that in one number, and it agreed with two independent checks to within 3 %.</p></details>
+<details><summary>Why can you ignore gravity?</summary><p>The Bond number is at most 5×10⁻⁴ inside pores, and the strip is horizontal. Gravity only mattered in the vertical calibration experiment, which is why we carry a 9 % systematic uncertainty on K.</p></details>
+<details><summary>Can your device tell high viscosity from low surface tension?</summary><p>No, and no device measuring arrival times can. Both enter only through K ∝ γ cosθ / μ. We showed three different changes giving identical timings to the millisecond. We classify "the fluid is slower than water", not its cause.</p></details>
+<details><summary>Why four electrodes, and why at those positions?</summary><p>One electrode gives a single time, which cannot say where a problem is. Several give a pattern. Spacing them evenly in L² makes each segment take the same expected time (42.5 s), so every segment gets equal timing resolution.</p></details>
+<details><summary>What is your main improvement over a fixed timeout?</summary><p>About twice the detection rate at the same false-alarm rate (88.9 % against 46.8 %), plus a cause and a location. The extra electrodes give the detection. The physics-based rules give the classification, and they adapt to the sample's own speed.</p></details>
+<details><summary>Why did mild restrictions go undetected?</summary><p>A 4 mm-equivalent restriction changes a segment's timing by under 10 %, which is less than the normal strip-to-strip spread plus timing noise. We computed the threshold: about 10–15 mm, depending on position.</p></details>
+<details><summary>How do you know the hardware is right?</summary><p>An independent Python model written from the same spec gives the expected answer for 9,900 cases; the RTL matched all of them. Assertions check rules such as "no result before its evidence"; coverage shows every state and outcome was exercised; and six deliberately broken designs were all caught.</p></details>
+<details><summary>What is the weakest part of the project?</summary><p>The four-electrode results come from a physics simulation, not from a measured strip. The real data we checked against has only one electrode. The next step would be a printed strip with four electrodes.</p></details>
+
+<!-- ================================================================= 16 -->
+<h2 id="quiz"><span class="n">16</span>Check yourself</h2>
+<details><summary>1. A strip wicks 20 mm in 42.5 s. How long to 30 mm?</summary><p>t ∝ L²: 42.5 × (30/20)² = 95.6 s.</p></details>
+<details><summary>2. The sample is 3× more viscous than water. What do all four ratios become?</summary><p>About 3, 3, 3, 3. K drops by 3×, so every segment takes 3× longer. The pattern is flat, so the verdict is UNIFORM_SLOW.</p></details>
+<details><summary>3. The ratios read 1.0, 1.0, 1.5, 1.4. What happened, and where?</summary><p>A restriction in segment 2: normal before it, slow from it onward. Segment 3 stays slow because the extra resistance stays in the circuit.</p></details>
+<details><summary>4. Ratios 2.2, 1.8, 1.6, 1.5, falling. What does that suggest?</summary><p>A restriction before the first electrode. A constant extra resistance adds a term ∝ L that matters less as L grows. The detector reports ANOMALY.</p></details>
+<details><summary>5. Electrodes 0 and 1 fire, then nothing. Is it a stall or a broken electrode 2?</summary><p>If electrode 3 also never fires, the detector reports STALL in segment 2. If electrode 3 fires later, then electrode 2 missed its arrival: SENSOR. A missed <i>last</i> electrode cannot be told apart from a stall in the last segment.</p></details>
+<details><summary>6. Why is the first-segment floor set at half the water time?</summary><p>No plausible sample wicks twice as fast as water (water at 37 °C is only 1.29× faster). A faster first segment means a false early trigger, so SENSOR.</p></details>
+
+<!-- ================================================================= 17 -->
+<h2 id="gloss"><span class="n">17</span>Glossary</h2>
+<div class="scroll"><table><tbody>
+  <tr><td><b>Capillarity</b></td><td>Liquid pulled into narrow spaces by surface tension.</td></tr>
+  <tr><td><b>Surface tension γ</b></td><td>Energy per area of a liquid surface (N/m). Water: 0.072.</td></tr>
+  <tr><td><b>Contact angle θ</b></td><td>Angle where a liquid edge meets a solid; 0° is perfect wetting.</td></tr>
+  <tr><td><b>Laplace pressure</b></td><td>Pressure jump across a curved surface, 2γcosθ/r in a tube.</td></tr>
+  <tr><td><b>Viscosity μ</b></td><td>Resistance to flow (Pa·s). Water: 0.89 mPa·s.</td></tr>
+  <tr><td><b>Hagen–Poiseuille</b></td><td>Laminar flow in a tube; speed ∝ r²ΔP/(μL).</td></tr>
+  <tr><td><b>Washburn (Lucas–Washburn) law</b></td><td>L² = Kt for capillary filling.</td></tr>
+  <tr><td><b>Darcy's law, permeability</b></td><td>Flow through porous media ∝ permeability × pressure gradient / viscosity.</td></tr>
+  <tr><td><b>Hydraulic resistance</b></td><td>Pressure needed per unit flow; adds in series like electrical resistors.</td></tr>
+  <tr><td><b>ΔL_eq</b></td><td>A restriction's size as equivalent extra length of normal paper.</td></tr>
+  <tr><td><b>Segment ratio ρ_k</b></td><td>Measured segment time divided by the water prediction.</td></tr>
+  <tr><td><b>Identifiability</b></td><td>Whether the data could, in principle, separate two causes.</td></tr>
+  <tr><td><b>Bond, capillary, Reynolds numbers</b></td><td>Gravity, viscous drag and inertia, each compared with the dominant effect.</td></tr>
+  <tr><td><b>Golden model</b></td><td>Independent reference implementation that defines the right answer.</td></tr>
+  <tr><td><b>Bit-exact</b></td><td>Hardware and reference give identical outputs, not just close ones.</td></tr>
+  <tr><td><b>Assertion (SVA)</b></td><td>A rule checked on every clock cycle during simulation.</td></tr>
+  <tr><td><b>Coverage</b></td><td>Evidence that each state, transition and outcome was exercised.</td></tr>
+  <tr><td><b>Mutation test</b></td><td>Deliberately breaking the design to prove the checks notice.</td></tr>
+</tbody></table></div>
+</div>
+
+<script>
+(function () {
+  const K0 = 9.42, POS = [20, Math.sqrt(800), Math.sqrt(1200), 40], W = 4, CAP = 0.101 * 4; // uL per mm
+  const TOL = 50 / 256, TOL_ABS = 38 / 256, STALL_X = 3, FIRST_MAX = 5, FIRST_MIN = 0.5;
+  const $ = id => document.getElementById(id);
+  const E = POS.map((L, k) => (L * L - (k ? POS[k - 1] ** 2 : 0)) / K0);
+  const NAMES = ["e0", "e1", "e2", "e3"];
+
+  function arrival(K, seg, dl) {
+    // t(L) = (2/K) * integral_0^L R(x) dx,  R(x) = x + (1/k - 1) * overlap([0,x], [a,b])
+    const edges = [0, ...POS];
+    let a = -1, b = -1, extra = 0;
+    if (seg >= 0 && dl > 0) { const mid = (edges[seg] + edges[seg + 1]) / 2; a = mid - W / 2; b = mid + W / 2; extra = dl / W; }
+    const dx = 0.005, out = []; let x = 0, I = 0, t = 0, next = 0;
+    while (next < POS.length) {
+      const R = x + extra * Math.max(0, Math.min(x, b) - a) * (a >= 0 ? 1 : 0);
+      const Rn = (x + dx) + extra * Math.max(0, Math.min(x + dx, b) - a) * (a >= 0 ? 1 : 0);
+      t += (2 / K) * 0.5 * (R + Rn) * dx; x += dx;
+      if (x >= POS[next]) { out.push(t); next++; }
+    }
+    return out;
+  }
+
+  function decide(t) {
+    const r = { cls: "", loc: 0, why: "" };
+    if (!isFinite(t[0]) || t[0] > FIRST_MAX * E[0]) return { cls: "STALL", loc: 0, why: "Nothing reached e0 within 5× the water time, so the front stopped in segment 0." };
+    if (t[0] < FIRST_MIN * E[0]) return { cls: "SENSOR", loc: 0, why: "e0 fired faster than any real sample could arrive." };
+    const rh = t[0] / E[0], dt = [t[0]];
+    for (let k = 1; k < 4; k++) {
+      const d = t[k] - t[k - 1];
+      if (!isFinite(t[k]) || d > STALL_X * rh * E[k]) return { cls: "STALL", loc: k, why: `${NAMES[k]} did not fire within 3 × r̂ × E. The front stopped in segment ${k}; check the sample volume.` };
+      dt.push(d);
+    }
+    for (let k = 1; k < 4; k++) {
+      const q = (dt[k] / E[k]) / rh;
+      if (q > 1 + TOL) return { cls: "RESTRICTION", loc: k, why: `Segment ${k} is ${((q - 1) * 100).toFixed(0)} % slower than this sample's own speed predicts: extra resistance starts there.` };
+      if (q < 1 - TOL) return { cls: "ANOMALY", loc: k, why: `Segment ${k} is ${((1 - q) * 100).toFixed(0)} % faster than predicted: ratios fall along the strip, the signature of resistance before e0.` };
+    }
+    const tot = t[3] / E.reduce((a, b) => a + b, 0);
+    if (tot > 1 + TOL_ABS) return { cls: "UNIFORM_SLOW", loc: 0, why: `All segments agree, but the whole fill took ${tot.toFixed(2)}× water: the fluid is slower (viscosity, surface tension or contact angle; these cannot be told apart).` };
+    if (tot < 1 - TOL_ABS) return { cls: "UNIFORM_FAST", loc: 0, why: `All segments agree and the fill took ${tot.toFixed(2)}× water: the fluid is faster than water.` };
+    return { cls: "NOMINAL", loc: 0, why: `All segments consistent, total ${tot.toFixed(2)}× water: within the ±14.8 % band for a healthy strip.` };
+  }
+
+  function render() {
+    const mu = +$("mu").value, ga = +$("ga").value, th = +$("th").value, seg = +$("seg").value, dl = +$("dl").value, vol = +$("vol").value;
+    $("mu_o").textContent = mu.toFixed(2) + "×"; $("ga_o").textContent = ga.toFixed(2) + "×"; $("th_o").textContent = th + "°";
+    $("dl_o").textContent = dl + " mm"; $("vol_o").textContent = vol.toFixed(1) + " µL";
+    $("dl").disabled = seg < 0;
+    const f = ga * Math.cos(th * Math.PI / 180) / mu, K = K0 * f;
+    let t = arrival(K, seg, dl);
+    const reach = vol / CAP; // mm wetted before the sample runs out (no creep in this lab)
+    t = t.map((v, k) => POS[k] <= reach ? v : Infinity);
+    $("kline").textContent = `K = ${K.toFixed(2)} mm²/s  (= 9.42 × γ·cosθ/μ factor ${f.toFixed(3)});  sample wets up to ${Math.min(reach, 99).toFixed(1)} mm`;
+    const d = decide(t);
+    const v = $("verdict");
+    v.textContent = d.cls + (["RESTRICTION", "ANOMALY", "STALL", "SENSOR"].includes(d.cls) ? ` · segment ${d.loc}` : "");
+    v.className = "verdict " + (d.cls === "NOMINAL" ? "ok" : (d.cls.startsWith("UNIFORM") ? "warn" : "bad"));
+    $("why").textContent = d.why;
+    // table
+    const rows = [];
+    for (let k = 0; k < 4; k++) {
+      const dtk = isFinite(t[k]) ? t[k] - (k ? t[k - 1] : 0) : NaN;
+      const rho = dtk / E[k];
+      rows.push(`<tr><td>${NAMES[k]}</td><td class="num">${POS[k].toFixed(1)} mm</td><td class="num">${isFinite(t[k]) ? t[k].toFixed(1) + " s" : "never"}</td><td class="num">${(E.slice(0, k + 1).reduce((a, b) => a + b, 0)).toFixed(1)} s</td><td class="num">${isFinite(rho) ? rho.toFixed(2) : "–"}</td></tr>`);
+    }
+    $("tbody").innerHTML = rows.join("");
+    // chart
+    const rho = t.map((v, k) => isFinite(v) && (k === 0 || isFinite(t[k - 1])) ? (v - (k ? t[k - 1] : 0)) / E[k] : NaN);
+    const ymax = Math.max(2.5, ...rho.filter(isFinite).map(x => x * 1.15));
+    const X0 = 50, X1 = 505, Y0 = 195, Y1 = 20, y = val => Y0 - (val / ymax) * (Y0 - Y1);
+    let s = "";
+    const ticks = ymax <= 3 ? [0, 0.5, 1, 1.5, 2, 2.5, 3] : [0, 1, 2, 3, 4, 5, 6, 7, 8].filter(v => v <= ymax);
+    ticks.filter(v => v <= ymax).forEach(v => { s += `<line x1="${X0}" x2="${X1}" y1="${y(v)}" y2="${y(v)}" style="stroke:var(--rule)"/><text x="${X0 - 6}" y="${y(v) + 4}" text-anchor="end" class="ts">${v}</text>`; });
+    s += `<rect x="${X0}" y="${y(1 + TOL_ABS)}" width="${X1 - X0}" height="${y(1 - TOL_ABS) - y(1 + TOL_ABS)}" fill="none" style="stroke:var(--ink-2)" stroke-dasharray="4 3"/>`;
+    if (isFinite(rho[0])) s += `<rect x="${X0}" y="${y(rho[0] * (1 + TOL))}" width="${X1 - X0}" height="${y(rho[0] * (1 - TOL)) - y(rho[0] * (1 + TOL))}" style="fill:var(--wet-soft);opacity:.75"/>`;
+    const bw = 70, gap = (X1 - X0 - 4 * bw) / 5;
+    rho.forEach((r, k) => {
+      const x = X0 + gap + k * (bw + gap);
+      if (isFinite(r)) {
+        s += `<rect x="${x}" y="${y(r)}" width="${bw}" height="${Y0 - y(r)}" rx="3" style="fill:var(--accent)"/>`;
+        s += `<text x="${x + bw / 2}" y="${y(r) - 6}" text-anchor="middle" class="tb">${r.toFixed(2)}</text>`;
+      } else s += `<text x="${x + bw / 2}" y="${Y0 - 8}" text-anchor="middle" class="ts">no arrival</text>`;
+      s += `<text x="${x + bw / 2}" y="${Y0 + 16}" text-anchor="middle" class="ts">segment ${k}</text>`;
+    });
+    s += `<line x1="${X0}" x2="${X1}" y1="${Y0}" y2="${Y0}" style="stroke:var(--ink)"/><text x="12" y="${Y1 + 4}" class="ts">ρ</text>`;
+    $("chart").innerHTML = s;
+  }
+
+  const PRESETS = {
+    water: { mu: 1, ga: 1, th: 0, seg: -1, dl: 20, vol: 25 },
+    blood: { mu: 3.93, ga: 1, th: 0, seg: -1, dl: 20, vol: 25 },
+    gamma: { mu: 1, ga: 0.5, th: 0, seg: -1, dl: 20, vol: 25 },
+    restr: { mu: 1, ga: 1, th: 0, seg: 2, dl: 20, vol: 25 },
+    mild: { mu: 1, ga: 1, th: 0, seg: 2, dl: 4, vol: 25 },
+    upstream: { mu: 1, ga: 1, th: 0, seg: 0, dl: 30, vol: 25 },
+    short: { mu: 1, ga: 1, th: 0, seg: -1, dl: 20, vol: 12 }
+  };
+  document.querySelectorAll(".presets button").forEach(b => b.addEventListener("click", () => {
+    const p = PRESETS[b.dataset.p];
+    $("mu").value = p.mu; $("ga").value = p.ga; $("th").value = p.th; $("seg").value = p.seg; $("dl").value = p.dl; $("vol").value = p.vol;
+    render();
+  }));
+  ["mu", "ga", "th", "seg", "dl", "vol"].forEach(id => $(id).addEventListener("input", render));
+  render();
+})();
+</script>

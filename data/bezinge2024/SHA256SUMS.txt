@@ -1,0 +1,6 @@
+F4272B1335C8B501   143224  data_P3.csv
+4C304599FEE1AFE8    28783  electrofluidic_design_file.pdf
+3A273997C65848EA     3518  plot_swv_bipot.py
+36338B74109CFC46     3130  plotResults.m
+1C390F2767486E40      331  PulseMethod.txt
+52896273402115BB      399  SWVMethod.txt

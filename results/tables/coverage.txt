@@ -1,0 +1,530 @@
+
+ Xcrg Functional Coverage Report 
+
+ // To generate a more detailed report in html format, please run xcrg -dir <database> -report_format html -report_dir <dir>
+ // This is a text report also in CSV format. By exporting to Excel and using , as the delimiter, the data can be split into individual rows and columns
+ // This report contains 3 sections, Total Summary, CoverGroups Summary and CoverPoint Tables sections 
+ // In order to navigate to a CoverPoint's Table, the TableTag printed for the respective covergroup/instance can be grepped in this report
+ // For example, if covergroup name is g1 and coverpoint is cp1, the TableTag to go to the Group's CoverPoint Table summary is g1_cp1 
+ // For example, if covergroup name is g1, instance name is i1, coverpoint is cp1, the TableTag to go to the Instance's CoverPoint Table summary is g1_i1_cp1 
+
+
+
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: Total Summary ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+   Date             :, 10/28/26 00:18:01 India Standard Time
+   User             :, cj
+   Version          :, Vivado Simulator Coverage Report 2022.2
+   Command Line     :, C:/Xilinx/Vivado/2022.2/bin/unwrapped/win64.o/xcrg.exe -file covdbs.txt -merge_dir merged -merge_db_name all -report_format text -report_dir report -nolog 
+   Number of Tests  :, 1
+
+   Coverage Score            :, 83.4071
+   Total Insts Score         :, 83.4071
+   Total no of Cover Groups  :, 4
+   Total no of Instances     :, 4
+
+
+     CgName,                                           Score,      NumInsts,   AvgInstScore,   Weight,     Goal,       Merge Insts,    Get Inst Cov,   Per Inst,   AutoBinMax,     Comment,    
+
+       tb_top.dut.u_core::cg_fsm                         ,100         ,1           ,100             ,1           ,100         ,0               ,0               ,1           ,64              ,            ,
+       tb_top.dut.u_core::cg_state                       ,100         ,1           ,100             ,1           ,100         ,0               ,0               ,1           ,64              ,            ,
+       tb_top.dut.u_core::cg_result                      ,33.6283     ,1           ,33.6283         ,1           ,100         ,0               ,0               ,1           ,64              ,            ,
+       tb_top.dut.u_core::cg_boundary                    ,100         ,1           ,100             ,1           ,100         ,0               ,0               ,1           ,64              ,            ,
+
+
+
+
+
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CoverGroups Summary ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+Cover Group Details : tb_top.dut.u_core::cg_fsm
+
+CgName,                                           Score,      NumInsts,   AvgInstScore,   Weight,     Goal,       Merge Insts,    Get Inst Cov,   Per Inst,   AutoBinMax,     Comment,    
+
+tb_top.dut.u_core::cg_fsm                         ,100         ,1           ,100             ,1           ,100         ,0               ,0               ,1           ,64              ,            ,
+
+      Instances of CoverGroup - tb_top.dut.u_core::cg_fsm
+
+             InstName,                                         Score,      Weight,     Goal,       AtLeast,    AutoBinMax, PrintMissing,   IsInst,     Comment,    
+             u_cg_fsm                                          ,100         ,1           ,100         ,1           ,64          ,0               ,1           ,            ,
+
+
+      Instance u_cg_fsm Cover Point Details 
+
+             Name,                                             TableTag,     Expected,   Uncovered,  Covered,    Percent,    Goal,       Weight,     AtLeast,    AutoBinMax, Comment,    
+             cp_trans                                          ,cg_fsm_u_cg_fsm_cp_trans,30          ,0           ,30          ,100         ,100         ,1           ,1           ,64          ,            ,
+
+
+
+
+
+
+
+
+Cover Group Details : tb_top.dut.u_core::cg_state
+
+CgName,                                           Score,      NumInsts,   AvgInstScore,   Weight,     Goal,       Merge Insts,    Get Inst Cov,   Per Inst,   AutoBinMax,     Comment,    
+
+tb_top.dut.u_core::cg_state                       ,100         ,1           ,100             ,1           ,100         ,0               ,0               ,1           ,64              ,            ,
+
+      Instances of CoverGroup - tb_top.dut.u_core::cg_state
+
+             InstName,                                         Score,      Weight,     Goal,       AtLeast,    AutoBinMax, PrintMissing,   IsInst,     Comment,    
+             u_cg_state                                        ,100         ,1           ,100         ,1           ,64          ,0               ,1           ,            ,
+
+
+      Instance u_cg_state Cover Point Details 
+
+             Name,                                             TableTag,     Expected,   Uncovered,  Covered,    Percent,    Goal,       Weight,     AtLeast,    AutoBinMax, Comment,    
+             cp_state                                          ,cg_state_u_cg_state_cp_state,16          ,0           ,16          ,100         ,100         ,1           ,1           ,64          ,            ,
+
+
+
+
+
+
+
+
+Cover Group Details : tb_top.dut.u_core::cg_result
+
+CgName,                                           Score,      NumInsts,   AvgInstScore,   Weight,     Goal,       Merge Insts,    Get Inst Cov,   Per Inst,   AutoBinMax,     Comment,    
+
+tb_top.dut.u_core::cg_result                      ,33.6283     ,1           ,33.6283         ,1           ,100         ,0               ,0               ,1           ,64              ,            ,
+
+      Instances of CoverGroup - tb_top.dut.u_core::cg_result
+
+             InstName,                                         Score,      Weight,     Goal,       AtLeast,    AutoBinMax, PrintMissing,   IsInst,     Comment,    
+             u_cg_result                                       ,33.6283     ,1           ,100         ,1           ,64          ,0               ,1           ,            ,
+
+
+      Instance u_cg_result Cover Point Details 
+
+             Name,                                             TableTag,     Expected,   Uncovered,  Covered,    Percent,    Goal,       Weight,     AtLeast,    AutoBinMax, Comment,    
+             cp_res                                            ,cg_result_u_cg_result_cp_res,113         ,75          ,38          ,33.6283     ,100         ,1           ,1           ,64          ,            ,
+
+
+
+
+
+
+
+
+Cover Group Details : tb_top.dut.u_core::cg_boundary
+
+CgName,                                           Score,      NumInsts,   AvgInstScore,   Weight,     Goal,       Merge Insts,    Get Inst Cov,   Per Inst,   AutoBinMax,     Comment,    
+
+tb_top.dut.u_core::cg_boundary                    ,100         ,1           ,100             ,1           ,100         ,0               ,0               ,1           ,64              ,            ,
+
+      Instances of CoverGroup - tb_top.dut.u_core::cg_boundary
+
+             InstName,                                         Score,      Weight,     Goal,       AtLeast,    AutoBinMax, PrintMissing,   IsInst,     Comment,    
+             u_cg_boundary                                     ,100         ,1           ,100         ,1           ,64          ,0               ,1           ,            ,
+
+
+      Instance u_cg_boundary Cover Point Details 
+
+             Name,                                             TableTag,     Expected,   Uncovered,  Covered,    Percent,    Goal,       Weight,     AtLeast,    AutoBinMax, Comment,    
+             cp_glitch_rejected                                ,cg_boundary_u_cg_boundary_cp_glitch_rejected,1           ,0           ,1           ,100         ,100         ,1           ,1           ,64          ,            ,
+             cp_tie_incl_idx                                   ,cg_boundary_u_cg_boundary_cp_tie_incl_idx,1           ,0           ,1           ,100         ,100         ,1           ,1           ,64          ,            ,
+             cp_tie_excl_idx                                   ,cg_boundary_u_cg_boundary_cp_tie_excl_idx,1           ,0           ,1           ,100         ,100         ,1           ,1           ,64          ,            ,
+             cp_fast_first                                     ,cg_boundary_u_cg_boundary_cp_fast_first,1           ,0           ,1           ,100         ,100         ,1           ,1           ,64          ,            ,
+             cp_window_edge                                    ,cg_boundary_u_cg_boundary_cp_window_edge,1           ,0           ,1           ,100         ,100         ,1           ,1           ,64          ,            ,
+             cp_tol_hi_edge                                    ,cg_boundary_u_cg_boundary_cp_tol_hi_edge,1           ,0           ,1           ,100         ,100         ,1           ,1           ,64          ,            ,
+             cp_tol_lo_edge                                    ,cg_boundary_u_cg_boundary_cp_tol_lo_edge,1           ,0           ,1           ,100         ,100         ,1           ,1           ,64          ,            ,
+             cp_pre_high                                       ,cg_boundary_u_cg_boundary_cp_pre_high,1           ,0           ,1           ,100         ,100         ,1           ,1           ,64          ,            ,
+             cp_stall_idx                                      ,cg_boundary_u_cg_boundary_cp_stall_idx,4           ,0           ,4           ,100         ,100         ,1           ,1           ,64          ,            ,
+
+
+
+
+
+
+
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CoverPoint Tables::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+ Cover Point Table for Inst : u_cg_fsm, Variable :, cp_trans
+ Table tag :, cg_fsm_u_cg_fsm_cp_trans
+
+                      Summary 
+
+ Category,       Expected,   Uncovered,  Covered,    Percent,    
+ UserDefined,   30          ,0           ,30          ,100         ,
+
+                     Covered bins 
+
+      Name,       Hit Count,  AtLeast,    
+      idle_stage  ,46          ,1           ,
+      idle_report ,6           ,1           ,
+      stage_scan  ,46          ,1           ,
+      stage_mul   ,99          ,1           ,
+      bset_scan   ,99          ,1           ,
+      scan_min    ,804062      ,1           ,
+      min_tie     ,804062      ,1           ,
+      tie_issue   ,804062      ,1           ,
+      issue_scan  ,33          ,1           ,
+      issue_mul   ,804029      ,1           ,
+      testm_report,12          ,1           ,
+      testm_cls0  ,25          ,1           ,
+      testm_stage ,99          ,1           ,
+      testn_report,9           ,1           ,
+      testn_scan  ,803884      ,1           ,
+      cls0_mul    ,63          ,1           ,
+      cls1_mul    ,63          ,1           ,
+      cls2_report ,5           ,1           ,
+      cls2_mul    ,58          ,1           ,
+      cls3_report ,6           ,1           ,
+      cls3_uni    ,14          ,1           ,
+      cls3_cls0   ,38          ,1           ,
+      uni_report  ,14          ,1           ,
+      report_idle ,52          ,1           ,
+      mul_bset    ,99          ,1           ,
+      mul_testm   ,136         ,1           ,
+      mul_testn   ,803893      ,1           ,
+      mul_cls1    ,63          ,1           ,
+      mul_cls2    ,63          ,1           ,
+      mul_cls3    ,58          ,1           ,
+
+
+
+
+
+
+ Cover Point Table for Inst : u_cg_state, Variable :, cp_state
+ Table tag :, cg_state_u_cg_state_cp_state
+
+                      Summary 
+
+ Category,       Expected,   Uncovered,  Covered,    Percent,    
+ UserDefined,   16          ,0           ,16          ,100         ,
+
+                     Covered bins 
+
+      Name,       Hit Count,  AtLeast,    
+      auto_S_IDLE ,52          ,1           ,
+      auto_S_STAGE,145         ,1           ,
+      auto_S_BSET ,99          ,1           ,
+      auto_S_SCAN ,804062      ,1           ,
+      auto_S_MIN  ,804062      ,1           ,
+      auto_S_TIE  ,804062      ,1           ,
+      auto_S_ISSUE,804062      ,1           ,
+      auto_S_TESTM,136         ,1           ,
+      auto_S_TESTN,803893      ,1           ,
+      auto_S_CLS0 ,63          ,1           ,
+      auto_S_CLS1 ,63          ,1           ,
+      auto_S_CLS2 ,63          ,1           ,
+      auto_S_CLS3 ,58          ,1           ,
+      auto_S_UNI  ,14          ,1           ,
+      auto_S_REPORT,52          ,1           ,
+      auto_S_MUL  ,804312      ,1           ,
+
+
+
+
+
+
+ Cover Point Table for Inst : u_cg_result, Variable :, cp_res
+ Table tag :, cg_result_u_cg_result_cp_res
+
+                      Summary 
+
+ Category,       Expected,   Uncovered,  Covered,    Percent,    
+ UserDefined,   113         ,75          ,38          ,33.6283     ,
+
+                      Uncovered bins 
+
+      Name,       Hit Count,  AtLeast,    
+      restr_28    ,0           ,1           ,
+      restr_29    ,0           ,1           ,
+      restr_30    ,0           ,1           ,
+      restr_31    ,0           ,1           ,
+      restr_36    ,0           ,1           ,
+      restr_37    ,0           ,1           ,
+      restr_38    ,0           ,1           ,
+      restr_39    ,0           ,1           ,
+      restr_44    ,0           ,1           ,
+      restr_45    ,0           ,1           ,
+      restr_46    ,0           ,1           ,
+      restr_47    ,0           ,1           ,
+      restr_48    ,0           ,1           ,
+      restr_52    ,0           ,1           ,
+      restr_53    ,0           ,1           ,
+      restr_54    ,0           ,1           ,
+      restr_55    ,0           ,1           ,
+      restr_56    ,0           ,1           ,
+      restr_57    ,0           ,1           ,
+      restr_58    ,0           ,1           ,
+      restr_59    ,0           ,1           ,
+      restr_60    ,0           ,1           ,
+      restr_61    ,0           ,1           ,
+      restr_62    ,0           ,1           ,
+      restr_63    ,0           ,1           ,
+      anom_52     ,0           ,1           ,
+      anom_53     ,0           ,1           ,
+      anom_54     ,0           ,1           ,
+      anom_55     ,0           ,1           ,
+      anom_56     ,0           ,1           ,
+      anom_57     ,0           ,1           ,
+      anom_58     ,0           ,1           ,
+      anom_59     ,0           ,1           ,
+      anom_60     ,0           ,1           ,
+      anom_61     ,0           ,1           ,
+      anom_62     ,0           ,1           ,
+      anom_63     ,0           ,1           ,
+      stall_36    ,0           ,1           ,
+      stall_37    ,0           ,1           ,
+      stall_38    ,0           ,1           ,
+      stall_39    ,0           ,1           ,
+      stall_44    ,0           ,1           ,
+      stall_45    ,0           ,1           ,
+      stall_46    ,0           ,1           ,
+      stall_47    ,0           ,1           ,
+      stall_48    ,0           ,1           ,
+      stall_52    ,0           ,1           ,
+      stall_53    ,0           ,1           ,
+      stall_54    ,0           ,1           ,
+      stall_55    ,0           ,1           ,
+      stall_56    ,0           ,1           ,
+      stall_57    ,0           ,1           ,
+      stall_58    ,0           ,1           ,
+      stall_59    ,0           ,1           ,
+      stall_60    ,0           ,1           ,
+      stall_61    ,0           ,1           ,
+      stall_62    ,0           ,1           ,
+      stall_63    ,0           ,1           ,
+      sensor_44   ,0           ,1           ,
+      sensor_45   ,0           ,1           ,
+      sensor_46   ,0           ,1           ,
+      sensor_47   ,0           ,1           ,
+      sensor_48   ,0           ,1           ,
+      sensor_52   ,0           ,1           ,
+      sensor_53   ,0           ,1           ,
+      sensor_54   ,0           ,1           ,
+      sensor_55   ,0           ,1           ,
+      sensor_56   ,0           ,1           ,
+      sensor_57   ,0           ,1           ,
+      sensor_58   ,0           ,1           ,
+      sensor_59   ,0           ,1           ,
+      sensor_60   ,0           ,1           ,
+      sensor_61   ,0           ,1           ,
+      sensor_62   ,0           ,1           ,
+      sensor_63   ,0           ,1           ,
+
+
+                     Covered bins 
+
+      Name,       Hit Count,  AtLeast,    
+      nominal     ,10          ,1           ,
+      u_slow      ,2           ,1           ,
+      u_fast      ,2           ,1           ,
+      restr_25    ,2           ,1           ,
+      restr_26    ,1           ,1           ,
+      restr_27    ,2           ,1           ,
+      restr_32    ,3           ,1           ,
+      restr_33    ,2           ,1           ,
+      restr_34    ,3           ,1           ,
+      restr_35    ,4           ,1           ,
+      restr_40    ,5           ,1           ,
+      restr_41    ,7           ,1           ,
+      restr_42    ,2           ,1           ,
+      restr_43    ,1           ,1           ,
+      restr_49    ,3           ,1           ,
+      restr_50    ,1           ,1           ,
+      restr_51    ,2           ,1           ,
+      anom_49     ,3           ,1           ,
+      anom_50     ,1           ,1           ,
+      anom_51     ,2           ,1           ,
+      stall_32    ,3           ,1           ,
+      stall_33    ,2           ,1           ,
+      stall_34    ,3           ,1           ,
+      stall_35    ,4           ,1           ,
+      stall_40    ,5           ,1           ,
+      stall_41    ,7           ,1           ,
+      stall_42    ,2           ,1           ,
+      stall_43    ,1           ,1           ,
+      stall_49    ,3           ,1           ,
+      stall_50    ,1           ,1           ,
+      stall_51    ,2           ,1           ,
+      sensor_40   ,5           ,1           ,
+      sensor_41   ,7           ,1           ,
+      sensor_42   ,2           ,1           ,
+      sensor_43   ,1           ,1           ,
+      sensor_49   ,3           ,1           ,
+      sensor_50   ,1           ,1           ,
+      sensor_51   ,2           ,1           ,
+
+
+
+
+
+
+ Cover Point Table for Inst : u_cg_boundary, Variable :, cp_glitch_rejected
+ Table tag :, cg_boundary_u_cg_boundary_cp_glitch_rejected
+
+                      Summary 
+
+ Category,       Expected,   Uncovered,  Covered,    Percent,    
+ UserDefined,   1           ,0           ,1           ,100         ,
+
+                     Covered bins 
+
+      Name,       Hit Count,  AtLeast,    
+      hit         ,5           ,1           ,
+
+
+
+
+
+
+ Cover Point Table for Inst : u_cg_boundary, Variable :, cp_tie_incl_idx
+ Table tag :, cg_boundary_u_cg_boundary_cp_tie_incl_idx
+
+                      Summary 
+
+ Category,       Expected,   Uncovered,  Covered,    Percent,    
+ UserDefined,   1           ,0           ,1           ,100         ,
+
+                     Covered bins 
+
+      Name,       Hit Count,  AtLeast,    
+      hit         ,3           ,1           ,
+
+
+
+
+
+
+ Cover Point Table for Inst : u_cg_boundary, Variable :, cp_tie_excl_idx
+ Table tag :, cg_boundary_u_cg_boundary_cp_tie_excl_idx
+
+                      Summary 
+
+ Category,       Expected,   Uncovered,  Covered,    Percent,    
+ UserDefined,   1           ,0           ,1           ,100         ,
+
+                     Covered bins 
+
+      Name,       Hit Count,  AtLeast,    
+      hit         ,3           ,1           ,
+
+
+
+
+
+
+ Cover Point Table for Inst : u_cg_boundary, Variable :, cp_fast_first
+ Table tag :, cg_boundary_u_cg_boundary_cp_fast_first
+
+                      Summary 
+
+ Category,       Expected,   Uncovered,  Covered,    Percent,    
+ UserDefined,   1           ,0           ,1           ,100         ,
+
+                     Covered bins 
+
+      Name,       Hit Count,  AtLeast,    
+      hit         ,3           ,1           ,
+
+
+
+
+
+
+ Cover Point Table for Inst : u_cg_boundary, Variable :, cp_window_edge
+ Table tag :, cg_boundary_u_cg_boundary_cp_window_edge
+
+                      Summary 
+
+ Category,       Expected,   Uncovered,  Covered,    Percent,    
+ UserDefined,   1           ,0           ,1           ,100         ,
+
+                     Covered bins 
+
+      Name,       Hit Count,  AtLeast,    
+      hit         ,8           ,1           ,
+
+
+
+
+
+
+ Cover Point Table for Inst : u_cg_boundary, Variable :, cp_tol_hi_edge
+ Table tag :, cg_boundary_u_cg_boundary_cp_tol_hi_edge
+
+                      Summary 
+
+ Category,       Expected,   Uncovered,  Covered,    Percent,    
+ UserDefined,   1           ,0           ,1           ,100         ,
+
+                     Covered bins 
+
+      Name,       Hit Count,  AtLeast,    
+      hit         ,1           ,1           ,
+
+
+
+
+
+
+ Cover Point Table for Inst : u_cg_boundary, Variable :, cp_tol_lo_edge
+ Table tag :, cg_boundary_u_cg_boundary_cp_tol_lo_edge
+
+                      Summary 
+
+ Category,       Expected,   Uncovered,  Covered,    Percent,    
+ UserDefined,   1           ,0           ,1           ,100         ,
+
+                     Covered bins 
+
+      Name,       Hit Count,  AtLeast,    
+      hit         ,1           ,1           ,
+
+
+
+
+
+
+ Cover Point Table for Inst : u_cg_boundary, Variable :, cp_pre_high
+ Table tag :, cg_boundary_u_cg_boundary_cp_pre_high
+
+                      Summary 
+
+ Category,       Expected,   Uncovered,  Covered,    Percent,    
+ UserDefined,   1           ,0           ,1           ,100         ,
+
+                     Covered bins 
+
+      Name,       Hit Count,  AtLeast,    
+      hit         ,6           ,1           ,
+
+
+
+
+
+
+ Cover Point Table for Inst : u_cg_boundary, Variable :, cp_stall_idx
+ Table tag :, cg_boundary_u_cg_boundary_cp_stall_idx
+
+                      Summary 
+
+ Category,       Expected,   Uncovered,  Covered,    Percent,    
+ UserDefined,   4           ,0           ,4           ,100         ,
+
+                     Covered bins 
+
+      Name,       Hit Count,  AtLeast,    
+      s_0         ,2           ,1           ,
+      s_1         ,1           ,1           ,
+      s_2         ,2           ,1           ,
+      s_3         ,4           ,1           ,
+
+
+
+
+
+
